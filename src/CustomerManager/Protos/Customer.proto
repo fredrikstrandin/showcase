@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "CustomerManager.RPC";
+
+package customerManager;
+
+// The loan service definition.
+service CustomerRpc {
+  // Sends a loan request
+  rpc GetMonthlyIncome(SaleryRequest) returns (SaleryReply);
+}
+
+message SaleryRequest {
+  string Id = 1;  
+}
+
+// The response message containing the greetings.
+message SaleryReply {
+  //Antar att hela kronor räcker.
+  int32 MonthlyIncome = 1;
+}

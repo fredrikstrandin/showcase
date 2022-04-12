@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace LoanManager.Model
+{
+    public class RejectedEntity
+    {
+        [Key]
+        public Guid Id { get; set; }
+        public Guid LoanId { get; set; }
+        public Guid UserId { get; set; }
+        public DateTime Created { get; set; }
+        public LoanType Type { get; set; }
+        public int Amount { get; set; }
+        //Antar att man inte går in på delar av månader
+        public int Duration { get; set; }
+
+        public static implicit operator RejectedEntity(LoanApplicationEntity entity)
+        {
+            if(entity == null)
+            {
+                return null;
+            }
+
+            return new RejectedEntity()
+            {
+                LoanId = entity.Id,
+                UserId = entity.UserId,
+                Created = entity.Created,
+                Amount = entity.Amount,
+                Duration = entity.Duration,
+                Type = entity.Type
+            };
+        }
+
+
+        public static implicit operator LoanApplicationItem(RejectedEntity entity)
+        {
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return new LoanApplicationItem()
+            {
+                Id = entity.LoanId.ToString(),
+                UserId = entity.UserId.ToString(),
+                Amount = entity.Amount,
+                Duration = entity.Duration,
+                Type = entity.Type
+            };
+        }
+    }
+}

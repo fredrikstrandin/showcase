@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DFF6CE65-3709-4469-9553-C71DE49C5991}"
+	ProjectSection(SolutionItems) = preProject
+		Antaganden.txt = Antaganden.txt
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerManager", "CustomerManager\src\CustomerManager.csproj", "{26FCCD34-5C4F-4FC5-97D2-D5A69DAA0122}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager", "LoanManager\src\LoanManager.csproj", "{5106434B-5794-4F91-BB70-6C6DF84A2294}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{26FCCD34-5C4F-4FC5-97D2-D5A69DAA0122}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26FCCD34-5C4F-4FC5-97D2-D5A69DAA0122}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26FCCD34-5C4F-4FC5-97D2-D5A69DAA0122}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26FCCD34-5C4F-4FC5-97D2-D5A69DAA0122}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5106434B-5794-4F91-BB70-6C6DF84A2294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5106434B-5794-4F91-BB70-6C6DF84A2294}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5106434B-5794-4F91-BB70-6C6DF84A2294}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5106434B-5794-4F91-BB70-6C6DF84A2294}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CD0F592-0A1B-4EAC-A311-F230A02F8D0A}
+	EndGlobalSection
+EndGlobal
