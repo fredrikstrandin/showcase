@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package showcase.message;
+
+import "proto/person.proto";
+import "proto/login.proto";
+
+message IdentityMessage {
+    string Id = 1;
+    oneof MessageType {
+        Person Person = 2;
+        Login Login = 3;
+    }    
+}

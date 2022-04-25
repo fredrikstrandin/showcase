@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace CustomerManager.Model
+﻿namespace CustomerManager.Model
 {
     public class CustomerCreateItem : CustomerItem
     {
-        public CustomerCreateItem(string personalNumber, string firstName, string lastName, string email, string hash, byte[] salt, string street, string zip, string city, int monthlyIncome) 
+        public CustomerCreateItem(string personalNumber, string firstName, string lastName, string email, string hash, byte[] salt, string street, string zip, string city, int monthlyIncome)
             : base(null, personalNumber, firstName, lastName, email, street, zip, city, monthlyIncome)
         {
             Hash = hash;

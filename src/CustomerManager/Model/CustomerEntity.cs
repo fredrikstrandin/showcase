@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CustomerManager.Model
 {
-    public class CustomerEntity 
+    public class CustomerEntity
     {
         //Jag använder inte personnummer som id på grund av GDPR. Man vill inte skicka runt det på siten.
         [Key]
@@ -16,7 +12,7 @@ namespace CustomerManager.Model
         public string PersonalNumber { get; set; }
         [Required]
         public string FirstName { get; set; }
-        [Required] 
+        [Required]
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Hash { get; set; }
@@ -24,7 +20,7 @@ namespace CustomerManager.Model
         public string Street { get; set; }
         public string Zip { get; set; }
         public string City { get; set; }
-        [Required] 
+        [Required]
         public int MonthlyIncome { get; set; }
 
         public static implicit operator CustomerEntity(CustomerItem item)
@@ -43,7 +39,7 @@ namespace CustomerManager.Model
                 Street = item.Street,
                 Zip = item.Zip,
                 City = item.City,
-                MonthlyIncome = item?.MonthlyIncome ?? 0 
+                MonthlyIncome = item?.MonthlyIncome ?? 0
             };
         }
 
@@ -54,7 +50,7 @@ namespace CustomerManager.Model
                 return null;
             }
 
-            return new CustomerItem(entity.Id.ToString(), entity.PersonalNumber, entity.FirstName, entity.LastName, entity.Email, entity.Street, entity.Zip, entity.City,entity?.MonthlyIncome ?? 0);
+            return new CustomerItem(entity.Id.ToString(), entity.PersonalNumber, entity.FirstName, entity.LastName, entity.Email, entity.Street, entity.Zip, entity.City, entity?.MonthlyIncome ?? 0);
         }
 
         public static implicit operator CustomerEntity(CustomerCreateItem item)

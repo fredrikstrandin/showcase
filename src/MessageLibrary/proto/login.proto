@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+
+package showcase.message;
+
+message Login {
+    message Claim {
+        string Type = 1;
+        string Value = 2;
+    }
+
+    string Nickname = 1;
+    string Password = 2;
+    bytes Salt = 3; 
+
+    repeated Claim Claims = 4;
+}

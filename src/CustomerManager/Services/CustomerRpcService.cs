@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using CustomerManager.Interfaces;
+using CustomerManager.RPC;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
-using CustomerManager.RPC;
-using CustomerManager.Repository;
+using System.Threading.Tasks;
 
 namespace CustomerManager.Services
 {

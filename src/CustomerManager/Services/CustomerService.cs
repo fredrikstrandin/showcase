@@ -1,8 +1,8 @@
-﻿using CustomerManager.Model;
-using CustomerManager.Repository;
-using System;
+﻿using CustomerManager.Interfaces;
+using CustomerManager.Model;
+using IdentityModel;
 using System.Collections.Generic;
-using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,11 +12,13 @@ namespace CustomerManager.Services
     {
         public readonly ICustomerRepository _customerRepository;
         public readonly IPasswordService _passwordService;
+        public readonly IMessageService _messageService;
 
-        public CustomerService(ICustomerRepository customerRepository, IPasswordService passwordService)
+        public CustomerService(ICustomerRepository customerRepository, IPasswordService passwordService, IMessageService messageService)
         {
             _customerRepository = customerRepository;
             _passwordService = passwordService;
+            _messageService = messageService;
         }
 
         public async Task<CustomerRespons> CreateAsync(CustomerCreateRequest request, CancellationToken cancellationToken)
@@ -24,8 +26,22 @@ namespace CustomerManager.Services
             byte[] salt = _passwordService.GenerateSalt();
             string hash = _passwordService.CreateHash(request.Password, salt);
 
-            CustomerCreateItem item = new CustomerCreateItem(request.PersonalNumber, request.FirstName, request.LastName, request.Email, hash, salt, request.Street, request.Zip, request.City, request.MonthlyIncome);
-            
+            List<Claim> claims = new List<Claim>() { new Claim(JwtClaimTypes.Name, request.FirstName) };
+
+            await _messageService.SendLogin(request.Email, hash, salt, claims);
+
+            CustomerCreateItem item = new CustomerCreateItem(
+                request.PersonalNumber,
+                request.FirstName,
+                request.LastName,
+                request.Email,
+                hash,
+                salt,
+                request.Street,
+                request.Zip,
+                request.City,
+                request.MonthlyIncome);
+
             return await _customerRepository.CreateAsync(item, cancellationToken);
         }
 

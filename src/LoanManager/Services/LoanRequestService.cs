@@ -61,11 +61,6 @@ namespace LoanManager.Services
                 return new LoanApplicationRespons(loanRequestRespons.Id, decision.IsApproved, decision.Reasons);
             }
 
-            if (!decision.IsApproved)
-            {
-                return new LoanApplicationRespons(null, decision.IsApproved, decision.Reasons);
-            }
-
             if (loanRequestRespons.IsSuccess)
             {
                 return new LoanApplicationRespons(loanRequestRespons.Id, loanRequestRespons.IsSuccess);

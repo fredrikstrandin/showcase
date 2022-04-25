@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LoanManager.Model;
 using LoanManager.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,6 +13,7 @@ namespace LoanManager.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class LoanRequestController : ControllerBase
     {
         private readonly ILogger<LoanRequestController> _logger;

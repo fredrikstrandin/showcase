@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="proto\login.proto" />
+		<None Remove="proto\message.proto" />
+		<None Remove="proto\person.proto" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Google.Protobuf" Version="3.20.1" />
+		<PackageReference Include="Google.Protobuf.Tools" Version="3.20.1" />
+		<PackageReference Include="Grpc.Tools" Version="2.45.0">
+
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="proto\login.proto" />
+		<Protobuf Include="proto\message.proto" />
+		<Protobuf Include="proto\person.proto" />
+	</ItemGroup>
+
+</Project>

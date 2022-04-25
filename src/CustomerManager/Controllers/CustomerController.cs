@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using CustomerManager.Model;
+﻿using CustomerManager.Model;
 using CustomerManager.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LoanManager.Controllers
 {
@@ -58,8 +56,6 @@ namespace LoanManager.Controllers
         [HttpPost]
         public async Task<ActionResult<CustomerRespons>> Create([FromBody] CustomerCreateRequest item, CancellationToken cancellationToken)
         {
-            //Normalt behöver man inte skicka med id, det skall vara i oauth token. Men sätter inte upp en Identity server.
-
             _logger.LogInformation($"Loan request from {item.PersonalNumber} has started.");
 
             CustomerRespons ret = await _customerService.CreateAsync(item, cancellationToken);

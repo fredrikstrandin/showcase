@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace CustomerManager.Model
+﻿namespace CustomerManager.Model
 {
     public class CustomerCreateRequest
     {
@@ -19,8 +14,5 @@ namespace CustomerManager.Model
         public string City { get; set; }
         //Antar att hela kronor räcker.
         public int MonthlyIncome { get; set; }
-        
-        
-
     }
 }

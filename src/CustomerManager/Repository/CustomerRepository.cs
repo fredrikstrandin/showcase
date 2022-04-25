@@ -1,4 +1,5 @@
 ﻿using CustomerManager.EntityFramework;
+using CustomerManager.Interfaces;
 using CustomerManager.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -26,7 +27,7 @@ namespace CustomerManager.Repository
         {
             return await _context.Customers
                 .Select(x => new CustomerItem(x.Id.ToString(), x.PersonalNumber, x.FirstName, x.LastName, x.Email, x.Street, x.Zip, x.City, x.MonthlyIncome))
-                .ToListAsync(cancellationToken);            
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<CustomerItem> GetByIdAsync(string userId, CancellationToken cancellationToken)
@@ -66,7 +67,7 @@ namespace CustomerManager.Repository
                 {
                     return new CustomerRespons(request.Id, false);
                 }
-                
+
                 //För att kolla om användaren redan finns
                 CustomerEntity exist = await _context.Customers
                     .Where(x => x.Id == customerId)
