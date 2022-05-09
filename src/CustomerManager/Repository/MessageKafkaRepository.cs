@@ -2,8 +2,10 @@
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using CustomerManager.Interfaces;
+using CustomerManager.Model;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace CustomerManager.Repository;
@@ -11,19 +13,20 @@ namespace CustomerManager.Repository;
 public class MessageKafkaRepository : IMessageRepository
 {
     private readonly ILogger<MessageKafkaRepository> _logger;
+    private readonly KafkaSettings _kafkaSettings;
 
-    private readonly string _bootstrapServers = "localhost:9092";
-    private readonly string _schemaRegistryUrl = "localhost:8081";
     private readonly ProducerConfig _producerConfig;
     private readonly SchemaRegistryConfig _schemaRegistryConfig;
+    private readonly CachedSchemaRegistryClient _schemaRegistry;
 
-    public MessageKafkaRepository(ILogger<MessageKafkaRepository> logger)
+    public MessageKafkaRepository(IOptions<KafkaSettings> kafkaSettings, ILogger<MessageKafkaRepository> logger)
     {
         _logger = logger;
+        _kafkaSettings = kafkaSettings.Value;
 
         _producerConfig = new ProducerConfig
         {
-            BootstrapServers = _bootstrapServers
+            BootstrapServers = _kafkaSettings.BootstrapServers
         };
 
         _schemaRegistryConfig = new SchemaRegistryConfig
@@ -32,22 +35,17 @@ public class MessageKafkaRepository : IMessageRepository
             // schema.registry.url property for redundancy (comma separated list). 
             // The property name is not plural to follow the convention set by
             // the Java implementation.
-            Url = _schemaRegistryUrl,
+            Url = _kafkaSettings.SchemaRegistryUrl,
         };
 
-        var consumerConfig = new ConsumerConfig
-        {
-            BootstrapServers = _bootstrapServers,
-            GroupId = "protobuf-example-consumer-group"
-        };
+        _schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig);
     }
 
     public async Task SendMessageAsync<K, V>(K key, V message, string topicName) where V : IMessage<V>, new()
     {
-        using (var schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig))
         using (var producer =
             new ProducerBuilder<K, V>(_producerConfig)
-                .SetValueSerializer(new ProtobufSerializer<V>(schemaRegistry))
+                .SetValueSerializer(new ProtobufSerializer<V>(_schemaRegistry))
                 .Build())
         {
             var output = await producer

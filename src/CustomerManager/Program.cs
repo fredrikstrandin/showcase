@@ -1,5 +1,6 @@
 using CustomerManager.EntityFramework;
 using CustomerManager.Interfaces;
+using CustomerManager.Model;
 using CustomerManager.Repository;
 using CustomerManager.Services;
 using Microsoft.AspNetCore.Builder;
@@ -9,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<KafkaSettings>(builder.Configuration.GetSection("Kafka"));
 
 // Add services to the container.
 builder.Services.AddScoped<ICustomerService, CustomerService>();
