@@ -12,5 +12,5 @@ public interface IUserStoreService
     Task<UserItem> FindByUserNameAsync(string username);
     Task<bool> ValidateCredentialsAsync(string username, string password);
     Task<bool> IsActiveAsync(string username);
-    Task<string> AddUserAsync(string nickname, string password, byte[] salt, List<Claim> claims);
+    Task<string> AddUserAsync(string nickname, string password, byte[] salt, string sub, List<Claim> claims);
 }

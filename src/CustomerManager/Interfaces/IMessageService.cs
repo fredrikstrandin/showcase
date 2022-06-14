@@ -6,6 +6,6 @@ namespace CustomerManager.Services
 {
     public interface IMessageService
     {
-        Task SendLogin(string nickname, string password, byte[] salt, List<Claim> claims);
+        Task SendLogin(string nickname, string password, byte[] salt, string sub, List<Claim> claims);
     }
 }

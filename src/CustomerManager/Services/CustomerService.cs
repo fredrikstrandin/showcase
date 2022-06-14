@@ -28,21 +28,22 @@ namespace CustomerManager.Services
 
             List<Claim> claims = new List<Claim>() { new Claim(JwtClaimTypes.Name, request.FirstName) };
 
-            await _messageService.SendLogin(request.Email, hash, salt, claims);
-
-            CustomerCreateItem item = new CustomerCreateItem(
+            CustomerItem item = new CustomerItem(
+                null,
                 request.PersonalNumber,
                 request.FirstName,
                 request.LastName,
                 request.Email,
-                hash,
-                salt,
                 request.Street,
                 request.Zip,
                 request.City,
                 request.MonthlyIncome);
 
-            return await _customerRepository.CreateAsync(item, cancellationToken);
+            var ret = await _customerRepository.CreateAsync(item, cancellationToken);
+
+            await _messageService.SendLogin(request.Email, hash, salt, ret.Id, claims);
+
+            return ret;
         }
 
         public async Task<CustomerRespons> UpdateAsync(CustomerUpdateRequest request, CancellationToken cancellationToken)

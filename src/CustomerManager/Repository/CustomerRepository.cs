@@ -135,7 +135,7 @@ namespace CustomerManager.Repository
                 return new CustomerRespons(Guid.Empty.ToString(), false);
             }
         }
-        public async Task<CustomerRespons> CreateAsync(CustomerCreateItem item, CancellationToken cancellationToken)
+        public async Task<CustomerRespons> CreateAsync(CustomerItem item, CancellationToken cancellationToken)
         {
             try
             {

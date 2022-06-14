@@ -17,7 +17,7 @@ public class MessageService : IMessageService
         _messageRepository = messageRepository;
     }
 
-    public Task SendLogin(string nickname, string password, byte[] salt, List<Claim> claims)
+    public Task SendLogin(string nickname, string password, byte[] salt, string sub, List<Claim> claims)
     {
         IdentityMessage message = new IdentityMessage()
         {
@@ -27,6 +27,7 @@ public class MessageService : IMessageService
                 Nickname = nickname,
                 Password = password,
                 Salt = ByteString.CopyFrom(salt),
+                Sub = sub
             }
         };
 

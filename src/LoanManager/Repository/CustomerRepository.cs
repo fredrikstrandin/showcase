@@ -1,6 +1,7 @@
 ﻿using CustomerManager.RPC;
 using Grpc.Core;
 using Grpc.Net.Client;
+using LoanManager.Interface;
 using LoanManager.Model;
 using System;
 using System.Collections.Generic;

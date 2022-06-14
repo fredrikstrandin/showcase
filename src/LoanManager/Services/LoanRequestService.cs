@@ -1,4 +1,5 @@
 ﻿using CustomerManager.Model;
+using LoanManager.Interface;
 using LoanManager.Model;
 using LoanManager.Repository;
 using LoanManager.Validation;
@@ -15,22 +16,20 @@ namespace LoanManager.Services
     {
         private readonly ILoanRequestRepository _loanRequestRepository;
         private readonly IDecisionRepository _decisionRepository;
-        private readonly IRejectRepository _rejectRepository; 
-        private readonly IEnumerable<ILoanApplicationValidation> _loanRequestValidation;
+        private readonly IRejectRepository _rejectRepository;
+        private readonly IDecisionService _decisionService;
 
-        public LoanRequestService(ILoanRequestRepository loanRequestRepository, IEnumerable<ILoanApplicationValidation> loanRequestValidation, 
-            IDecisionRepository decisionRepository, IRejectRepository rejectRepository)
+        public LoanRequestService(ILoanRequestRepository loanRequestRepository, IDecisionRepository decisionRepository, IRejectRepository rejectRepository, IDecisionService decisionService)
         {
             _loanRequestRepository = loanRequestRepository;
-            _loanRequestValidation = loanRequestValidation;
             _decisionRepository = decisionRepository;
             _rejectRepository = rejectRepository;
+            _decisionService = decisionService;
         }
 
         public async Task<List<LoanApplicationItem>> GetByUserIdAsync(string userId, CancellationToken cancellationToken)
         {
-            return await _loanRequestRepository.GetByUserIdAsync(userId, cancellationToken);
-        }
+            return await _loanRequestRepository.GetByUserIdAsync(userId, cancellationToken);                                    }
 
         public async Task<LoanApplicationItem> GetByLoanIdAsync(string loanId, CancellationToken cancellationToken)
         {
@@ -41,11 +40,11 @@ namespace LoanManager.Services
         {
             //Här borde man kolla en token om användaren är behörig att lägg upp ett lån. 
 
-            var decision = await LoanDecision(request, cancellationToken);
+            var decision = await _decisionService.ApplayLoanAsync(request, cancellationToken);
 
             LoanRequestRespons loanRequestRespons;
                 
-            if (decision.IsApproved)
+            if (decision.Approved)
             {
                 loanRequestRespons = await _loanRequestRepository.CreateAsync(request, cancellationToken);
             }
@@ -54,11 +53,11 @@ namespace LoanManager.Services
                 loanRequestRespons = await _rejectRepository.CreateAsync(request, cancellationToken);
             }
 
-            await SaveLoanDecision(loanRequestRespons.Id, decision.IsApproved, decision.Reasons, cancellationToken);
+            await SaveLoanDecision(loanRequestRespons.Id, decision.Approved, decision.Decisions, cancellationToken);
 
-            if (!decision.IsApproved)
+            if (!decision.Approved)
             {
-                return new LoanApplicationRespons(loanRequestRespons.Id, decision.IsApproved, decision.Reasons);
+                return new LoanApplicationRespons(loanRequestRespons.Id, decision.Approved, decision.Decisions);
             }
 
             if (loanRequestRespons.IsSuccess)
@@ -93,11 +92,11 @@ namespace LoanManager.Services
                 item.Duration = request.Duration;
             }
 
-            var decision = await LoanDecision(item, cancellationToken);
+            var decision = await _decisionService.ApplayLoanAsync(item, cancellationToken);
 
             LoanRequestRespons loanRequestRespons = null;
 
-            if (decision.IsApproved)
+            if (decision.Approved)
             {
                 loanRequestRespons = await _loanRequestRepository.UpdateAsync(item, cancellationToken);
             }
@@ -107,11 +106,11 @@ namespace LoanManager.Services
             }
 
 
-            await SaveLoanDecision(item.Id, decision.IsApproved, decision.Reasons, cancellationToken);
+            await SaveLoanDecision(item.Id, decision.Approved, decision.Decisions, cancellationToken);
 
-            if (!decision.IsApproved)
+            if (!decision.Approved)
             {
-                return new LoanApplicationRespons(loanRequestRespons.Id, decision.IsApproved, decision.Reasons);
+                return new LoanApplicationRespons(loanRequestRespons.Id, decision.Approved, decision.Decisions);
             }
 
             if (loanRequestRespons.IsSuccess)
@@ -138,32 +137,10 @@ namespace LoanManager.Services
             }
         }
 
-        //Detta borde vara en tjänst om inte annat för att lätt kunna testa men detta är bara demo
-        private async Task<(bool IsApproved, List<string> Reasons)> LoanDecision(LoanApplicationItem item, CancellationToken cancellationToken)
-        {
-            bool isApproved = true;
-            List<string> reasons = new List<string>();
-
-            foreach (ILoanApplicationValidation validation in _loanRequestValidation)
-            {
-                if (validation.IsLoanToValidation(item.Type))
-                {
-                    var validationRespons = await validation.Validation(item, cancellationToken);
-
-                    if (!validationRespons.IsApprovd)
-                    {
-                        isApproved = validationRespons.IsApprovd;
-                        reasons.Add(validationRespons.Decision);
-                    }
-                }
-            }
-
-            return (isApproved, reasons);
-        }
-
+        
         private async Task SaveLoanDecision(string id, bool isApproved, List<string> decision, CancellationToken cancellationToken)
         {
-            await _decisionRepository.CreateAsync(new DecisionItem() { LoanId = id, Created = DateTime.UtcNow, Aproved = isApproved, Decisions = decision }, cancellationToken);
+            await _decisionRepository.CreateAsync(new DecisionItem( id, DateTime.UtcNow, isApproved, decision), cancellationToken);
         }
     }
 }

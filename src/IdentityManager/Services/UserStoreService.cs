@@ -103,8 +103,8 @@ public class UserStoreService : IUserStoreService
         return _userStoreRepository.IsActive(subjectId);
     }
 
-    public Task<string> AddUserAsync(string nickname, string password, byte[] salt, List<Claim> claims)
+    public Task<string> AddUserAsync(string nickname, string password, byte[] salt, string sub, List<Claim> claims)
     {
-        return _userStoreRepository.CreateUserAsync(nickname, password, salt, claims);
+        return _userStoreRepository.CreateUserAsync(nickname, password, salt, sub, claims);
     }
 }

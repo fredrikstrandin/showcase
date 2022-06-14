@@ -1,5 +1,6 @@
 ﻿using CustomerManager.Model;
 using LoanManager.EntityFramework;
+using LoanManager.Interface;
 using LoanManager.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

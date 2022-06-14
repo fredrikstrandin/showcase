@@ -1,4 +1,5 @@
 using LoanManager.EntityFramework;
+using LoanManager.Interface;
 using LoanManager.Repository;
 using LoanManager.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

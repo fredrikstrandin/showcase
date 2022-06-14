@@ -84,10 +84,11 @@ namespace IdentityManager.Repository
             return false;
         }
 
-        public async Task<string> CreateUserAsync(string nickname, string hash, byte[] salt, List<Claim> claims)
+        public async Task<string> CreateUserAsync(string nickname, string hash, byte[] salt, string sub, List<Claim> claims)
         {
             var user = new UserEntity()
             {
+                SubjectId = ObjectId.Parse(sub),
                 Username = nickname,
                 UsernameNormalize = nickname.ToLower(),
                 Password = hash,

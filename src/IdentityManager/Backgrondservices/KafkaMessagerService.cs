@@ -84,9 +84,10 @@ namespace IdentityManager.Backgrondservices
                                             claims.Add(new Claim(item.Type, item.Value));
                                         }
 
-                                        string id = await _userStoreService.AddUserAsync(consumeResult.Message.Value.Login.Nickname, 
+                                        string id = await _userStoreService.AddUserAsync(consumeResult.Message.Value.Login.Nickname,
                                             consumeResult.Message.Value.Login.Password,
                                             consumeResult.Message.Value.Login.Salt.ToArray(),
+                                            consumeResult.Message.Value.Login.Sub,
                                             claims);
 
                                         Console.WriteLine($"Id: {id}");

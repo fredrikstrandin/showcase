@@ -1,5 +1,5 @@
-﻿using LoanManager.Model;
-using LoanManager.Repository;
+﻿using LoanManager.Interface;
+using LoanManager.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

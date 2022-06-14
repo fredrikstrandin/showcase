@@ -7,9 +7,17 @@ namespace LoanManager.Model
 {
     public class DecisionItem
     {
-        public string LoanId { get; set; }
-        public DateTime Created { get; set; }
-        public bool Aproved { get; set; }
-        public List<string> Decisions { get; set; }
+        public DecisionItem(string loanId, DateTime created, bool aproved, List<string> decisions)
+        {
+            LoanId = loanId;
+            Created = created;
+            Approved = aproved;
+            Decisions = decisions;
+        }
+
+        public string LoanId { get; }
+        public DateTime Created { get; }
+        public bool Approved { get; }
+        public List<string> Decisions { get; }
     }
 }

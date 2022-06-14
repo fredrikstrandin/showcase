@@ -1,5 +1,6 @@
 ﻿using CustomerManager.Model;
 using LoanManager.EntityFramework;
+using LoanManager.Interface;
 using LoanManager.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,7 @@ namespace LoanManager.Repository
                     return false;
                 }
 
-                if (item.Aproved)
+                if (item.Approved)
                 {
                     DecisionEntity entity = new DecisionEntity()
                     {
@@ -51,7 +52,7 @@ namespace LoanManager.Repository
                         {
                             LoanId = id,
                             Created = DateTime.UtcNow,
-                            Aproved = item.Aproved,
+                            Aproved = item.Approved,
                             Decision = decision
                         };
 
