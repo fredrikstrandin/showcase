@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +10,7 @@ namespace LoanManager.Model
 {
     public class RejectionEntity
     {
-        [Key]
+        [BsonId]
         public ObjectId Id { get; set; }
         public ObjectId LoanId { get; set; }
         public ObjectId UserId { get; set; }
