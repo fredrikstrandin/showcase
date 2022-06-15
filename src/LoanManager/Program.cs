@@ -1,27 +1,29 @@
-using LoanManager.EntityFramework;
+using LoanManager.DataContexts;
 using LoanManager.Interface;
 using LoanManager.Repository;
 using LoanManager.Services;
+using LoanManager.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDBDatabaseSetting"));
+builder.Services.AddSingleton<IMongoDBContext, MongoDBContext>();
+
 // Add services to the container.
-builder.Services.AddScoped<ILoanRequestService, LoanRequestService>();
-builder.Services.AddScoped<ILoanRequestRepository, LoanRequestRepository>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IDecisionRepository, DecisionRepository>();
-builder.Services.AddScoped<IRejectRepository, RejectRepository>();
+builder.Services.AddSingleton<ILoanRequestService, LoanRequestService>();
+builder.Services.AddSingleton<IDecisionService, DecisionService>();
+
+builder.Services.AddSingleton<ILoanRequestRepository, LoanRequestRepository>();
+builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
+builder.Services.AddSingleton<IDecisionRepository, DecisionRepository>();
+builder.Services.AddSingleton<IRejectRepository, RejectRepository>();
 
 builder.Services.AddValidations();
-
-//Entity Framework
-builder.Services.AddDbContext<LoanContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("LoanContext")));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>

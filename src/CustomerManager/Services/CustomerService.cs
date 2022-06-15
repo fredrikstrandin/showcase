@@ -41,7 +41,10 @@ namespace CustomerManager.Services
 
             var ret = await _customerRepository.CreateAsync(item, cancellationToken);
 
-            await _messageService.SendLogin(request.Email, hash, salt, ret.Id, claims);
+            if (ret.IsSuccess)
+            {
+                await _messageService.SendLogin(request.Email, hash, salt, ret.Id, claims);
+            }
 
             return ret;
         }

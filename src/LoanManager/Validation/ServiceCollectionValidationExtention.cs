@@ -7,9 +7,9 @@ namespace Microsoft.Extensions.DependencyInjection
         //Lägg till dom valideringarna som skall göras på lånen.
         public static IServiceCollection AddValidations(this IServiceCollection services)
         {
-            services.AddScoped<ILoanApplicationValidation, MonthlyIncomeValidation>();
-            services.AddScoped<ILoanApplicationValidation, MaxTenYearsValidation>();
-            services.AddScoped<ILoanApplicationValidation, AtLessOneMounthValidation>();
+            services.AddSingleton<ILoanApplicationValidation, MonthlyIncomeValidation>();
+            services.AddSingleton<ILoanApplicationValidation, MaxTenYearsValidation>();
+            services.AddSingleton<ILoanApplicationValidation, AtLessOneMounthValidation>();
 
             return services;
         }

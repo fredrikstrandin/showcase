@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace LoanManager.Model
     public class LoanApplicationEntity
     {
         [Key]
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }
+        public ObjectId Id { get; set; }
+        public ObjectId UserId { get; set; }
         public DateTime Created { get; set; }
         public LoanType Type { get; set; }
         public int Amount { get; set; }

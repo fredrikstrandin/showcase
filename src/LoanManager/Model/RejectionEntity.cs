@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,26 +7,26 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Model
 {
-    public class RejectedEntity
+    public class RejectionEntity
     {
         [Key]
-        public Guid Id { get; set; }
-        public Guid LoanId { get; set; }
-        public Guid UserId { get; set; }
+        public ObjectId Id { get; set; }
+        public ObjectId LoanId { get; set; }
+        public ObjectId UserId { get; set; }
         public DateTime Created { get; set; }
         public LoanType Type { get; set; }
         public int Amount { get; set; }
         //Antar att man inte går in på delar av månader
         public int Duration { get; set; }
 
-        public static implicit operator RejectedEntity(LoanApplicationEntity entity)
+        public static implicit operator RejectionEntity(LoanApplicationEntity entity)
         {
             if(entity == null)
             {
                 return null;
             }
 
-            return new RejectedEntity()
+            return new RejectionEntity()
             {
                 LoanId = entity.Id,
                 UserId = entity.UserId,
@@ -37,7 +38,7 @@ namespace LoanManager.Model
         }
 
 
-        public static implicit operator LoanApplicationItem(RejectedEntity entity)
+        public static implicit operator LoanApplicationItem(RejectionEntity entity)
         {
             if (entity == null)
             {

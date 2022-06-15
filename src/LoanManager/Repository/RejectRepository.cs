@@ -1,9 +1,9 @@
 ﻿using CustomerManager.Model;
-using LoanManager.EntityFramework;
+using LoanManager.DataContexts;
 using LoanManager.Interface;
 using LoanManager.Model;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +16,9 @@ namespace LoanManager.Repository
     {
         private readonly ILogger<RejectRepository> _logger;
 
-        private readonly LoanContext _context;
+        private readonly IMongoDBContext _context;
 
-        public RejectRepository(LoanContext context, ILogger<RejectRepository> logger)
+        public RejectRepository(IMongoDBContext context, ILogger<RejectRepository> logger)
         {
             _context = context;
             _logger = logger;
@@ -30,21 +30,21 @@ namespace LoanManager.Repository
             {
                 _logger.LogInformation($"Customer {item.UserId} loan request is creating.");
 
-                if (!Guid.TryParse(item.Id, out Guid id))
+                if (!ObjectId.TryParse(item.Id, out ObjectId id))
                 {
-                    _logger.LogWarning($"Id {item.Id} is not a Guid.");
+                    _logger.LogWarning($"Id {item.Id} is not a ObjectId.");
 
                     return new LoanRequestRespons(null, false);
                 }
 
-                if (!Guid.TryParse(item.UserId, out Guid userId))
+                if (!ObjectId.TryParse(item.UserId, out ObjectId userId))
                 {
-                    _logger.LogWarning($"UserId {item.UserId} is not a Guid.");
+                    _logger.LogWarning($"UserId {item.UserId} is not a ObjectId.");
 
                     return new LoanRequestRespons(null, false);
                 }
 
-                RejectedEntity rejected = new RejectedEntity()
+                RejectionEntity rejected = new RejectionEntity()
                 {
                     LoanId  = id,
                     UserId = userId,
@@ -54,13 +54,11 @@ namespace LoanManager.Repository
                     Type = item.Type
                 };
 
-                _context.RejectedLoanApplications.Add(rejected);
-
-                int count = await _context.SaveChangesAsync(cancellationToken);
+                await _context.Rejections.InsertOneAsync(rejected, cancellationToken: cancellationToken);
 
                 _logger.LogInformation("Loan was created.");
 
-                return new LoanRequestRespons(rejected.Id.ToString(), count > 0);
+                return new LoanRequestRespons(rejected.Id.ToString(), true);
             }
             catch (Exception e)
             {

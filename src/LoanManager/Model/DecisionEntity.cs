@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace LoanManager.Model
     public class DecisionEntity
     {
         [Key]
-        public Guid Id { get; set; }
-        public Guid LoanId { get; set; }
+        public ObjectId Id { get; set; }
+        public ObjectId LoanId { get; set; }
         public DateTime Created { get; set; }
         public bool Aproved { get; set; }
         public string Decision { get; set; }

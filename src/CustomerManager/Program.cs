@@ -1,10 +1,10 @@
-using CustomerManager.EntityFramework;
+using CustomerManager.DataContexts;
 using CustomerManager.Interfaces;
 using CustomerManager.Model;
 using CustomerManager.Repository;
 using CustomerManager.Services;
+using CustomerManager.Settings;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,18 +12,18 @@ using Microsoft.Extensions.Hosting;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<KafkaSettings>(builder.Configuration.GetSection("Kafka"));
+builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDBDatabaseSetting"));
+
+builder.Services.AddSingleton<IMongoDBContext, MongoDBContext>();
 
 // Add services to the container.
 builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerMongoDBRepository>();
 
 builder.Services.AddSingleton<IPasswordService, PasswordService>();
 
 builder.Services.AddSingleton<IMessageService, MessageService>();
 builder.Services.AddSingleton<IMessageRepository, MessageKafkaRepository>();
-
-//Entity Framework
-builder.Services.AddDbContext<CustomerContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CustomerContext")));
 
 builder.Services.AddGrpc();
 

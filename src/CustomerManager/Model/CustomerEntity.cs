@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace CustomerManager.Model
@@ -6,13 +8,10 @@ namespace CustomerManager.Model
     public class CustomerEntity
     {
         //Jag använder inte personnummer som id på grund av GDPR. Man vill inte skicka runt det på siten.
-        [Key]
-        public Guid Id { get; set; }
-        [MaxLength(12)]
+        [BsonId]
+        public ObjectId Id { get; set; }
         public string PersonalNumber { get; set; }
-        [Required]
         public string FirstName { get; set; }
-        [Required]
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Hash { get; set; }
@@ -20,7 +19,6 @@ namespace CustomerManager.Model
         public string Street { get; set; }
         public string Zip { get; set; }
         public string City { get; set; }
-        [Required]
         public int MonthlyIncome { get; set; }
 
         public static implicit operator CustomerEntity(CustomerItem item)

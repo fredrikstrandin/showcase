@@ -1,5 +1,6 @@
 ﻿using CustomerManager.Interfaces;
 using Google.Protobuf;
+using MongoDB.Bson;
 using Showcase.Message;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ public class MessageService : IMessageService
     {
         IdentityMessage message = new IdentityMessage()
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = ObjectId.GenerateNewId().ToString(),
             Login = new Login()
             {
                 Nickname = nickname,
@@ -36,7 +37,6 @@ public class MessageService : IMessageService
             message.Login.Claims.Add(new Login.Types.Claim() { Type = item.Type, Value = item.Value });
         }
 
-        return _messageRepository.SendMessageAsync(Guid.NewGuid().ToString(), message, "identity");
-
+        return _messageRepository.SendMessageAsync(ObjectId.GenerateNewId().ToString(), message, "identity");
     }
 }

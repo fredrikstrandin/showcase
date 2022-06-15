@@ -1,9 +1,9 @@
 ﻿using CustomerManager.Model;
-using LoanManager.EntityFramework;
+using LoanManager.DataContexts;
 using LoanManager.Interface;
 using LoanManager.Model;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +15,9 @@ namespace LoanManager.Repository
     public class DecisionRepository : IDecisionRepository
     {
         private readonly ILogger<DecisionRepository> _logger;
-        private readonly LoanContext _context;
+        private readonly IMongoDBContext _context;
 
-        public DecisionRepository(LoanContext context, ILogger<DecisionRepository> logger)
+        public DecisionRepository(IMongoDBContext context, ILogger<DecisionRepository> logger)
         {
             _context = context;
             _logger = logger;
@@ -27,7 +27,7 @@ namespace LoanManager.Repository
         {
             try
             {
-                if (!Guid.TryParse(item.LoanId, out Guid id))
+                if (!ObjectId.TryParse(item.LoanId, out ObjectId id))
                 {
                     return false;
                 }
@@ -42,7 +42,7 @@ namespace LoanManager.Repository
                         Decision = "Approved"
                     };
 
-                    _context.Decisions.Add(entity);
+                    await _context.Decisions.InsertOneAsync(entity);
                 }
                 else
                 {
@@ -56,13 +56,11 @@ namespace LoanManager.Repository
                             Decision = decision
                         };
 
-                        _context.Decisions.Add(entity);
+                        await _context.Decisions.InsertOneAsync(entity);
                     }
                 }
 
-                int count = await _context.SaveChangesAsync(cancellationToken);
-
-                return count > 0;
+                return true;
             }
             catch (Exception e)
             {
