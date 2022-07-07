@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package northstar.message;
+
+service CustomerGrpcService {
+    rpc Create(CustomerRequestMessage) returns (CustomerResponsMessage);
+    rpc GetMonthlyIncome(MonthlyIncomeRequest) returns (MonthlyIncomeReply);
+}
+
+message CustomerRequestMessage {
+    string personalNumber = 1;
+    string firstName = 2;   
+    string lastName = 3;
+    string email = 4;
+    string street = 5;
+    string zip = 6;
+    string city = 7;
+    int32 MonthlyIncome = 8;
+}
+
+message CustomerResponsMessage {
+    bool IsSuccess = 1;
+}
+                                                                                
+message MonthlyIncomeRequest {
+  string Id = 1;  
+}
+
+message MonthlyIncomeReply {
+  int32 MonthlyIncome = 1;
+}
