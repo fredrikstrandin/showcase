@@ -1,14 +1,15 @@
-﻿namespace CustomerManager.Model
-{
-    public class CustomerRespons
-    {
-        public CustomerRespons(string id, bool isSuccess)
-        {
-            Id = id;
-            IsSuccess = isSuccess;
-        }
+﻿using System;
 
-        public string Id { get; set; }
-        public bool IsSuccess { get; set; }
+namespace CustomerManager.Model;
+
+public class CustomerRespons
+{
+    public CustomerRespons(string id, Exception error)
+    {
+        Id = id;
+        Error = error;
     }
+
+    public string Id { get; }
+    public Exception Error { get; }
 }

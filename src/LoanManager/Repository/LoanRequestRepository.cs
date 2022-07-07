@@ -32,14 +32,11 @@ namespace LoanManager.Repository
                 var query =
                     from x in _context.LoanApplications.AsQueryable<LoanApplicationEntity>()
                     where x.UserId == id
-                    select new LoanApplicationItem()
-                    {
-                        Id = x.Id.ToString(),
-                        UserId = x.UserId.ToString(),
-                        Amount = x.Amount,
-                        Duration = x.Duration,
-                        Type = x.Type
-                    };
+                    select new LoanApplicationItem(
+                        x.Id.ToString(),
+                        x.Type,
+                        x.Amount,
+                        x.Duration);
 
                 return await query.ToListAsync(cancellationToken);
             }
@@ -49,12 +46,12 @@ namespace LoanManager.Repository
             }
         }
 
-        public async Task<LoanApplicationItem> GetByLoanIdAsync(string loanId, CancellationToken cancellationToken)
+        public async Task<LoanApplicationItem> GetByLoanIdAsync(string userId, string loanId, CancellationToken cancellationToken)
         {
-            if (ObjectId.TryParse(loanId, out ObjectId id))
+            if (ObjectId.TryParse(loanId, out ObjectId id) && ObjectId.TryParse(userId, out ObjectId uid))
             {
                 var query = from x in _context.LoanApplications.AsQueryable<LoanApplicationEntity>()
-                            where x.Id == id
+                            where x.Id == id && x.UserId == uid
                             select x;
 
                 return await query.FirstOrDefaultAsync(cancellationToken);
@@ -67,27 +64,35 @@ namespace LoanManager.Repository
             }
         }
 
-        public async Task<LoanRequestRespons> CreateAsync(LoanApplicationCreateRequest request, CancellationToken cancellationToken)
+        public async Task<LoanRequestRespons> CreateAsync(string userId, LoanApplicationItem item, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Creating loan.");
             try
             {
-                _logger.LogInformation($"Customer {request.UserId} loan request is creating.");
+                _logger.LogInformation($"Customer {userId} loan request is creating.");
 
-                if (!ObjectId.TryParse(request.UserId, out ObjectId userId))
+                if (!ObjectId.TryParse(item.Id, out ObjectId id))
                 {
-                    _logger.LogWarning($"UserId {request.UserId} is not a ObjectId.");
+                    _logger.LogWarning($"Id {item.Id} is not a ObjectId.");
+
+                    return new LoanRequestRespons(null, false);
+                }
+
+                if (!ObjectId.TryParse(userId, out ObjectId uid))
+                {
+                    _logger.LogWarning($"UserId {userId} is not a ObjectId.");
 
                     return new LoanRequestRespons(null, false);
                 }
 
                 LoanApplicationEntity entity = new LoanApplicationEntity()
                 {
-                    UserId = userId,
+                    Id = id,
+                    UserId = uid,
                     Created = DateTime.UtcNow,
-                    Amount = request.Amount,
-                    Duration = request.Duration,
-                    Type = request.Type
+                    Amount = item.Amount ?? 0,
+                    Duration = item.Duration ?? 0,
+                    Type = item.Type
                 };
 
                 await _context.LoanApplications.InsertOneAsync(entity, new InsertOneOptions(), cancellationToken);

@@ -1,4 +1,5 @@
-﻿using LoanManager.Model;
+﻿using LoanManager.Interface;
+using LoanManager.Model;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace LoanManager.Validation
             return type == LoanType.PrivateLoan || type ==LoanType.CompanyLoan;
         }
 
-        public Task<LoanValidationRespons> Validation(LoanApplicationItem request, CancellationToken cancellationToken)
+        public Task<LoanValidationRespons> Validation(LoanApplicationCreateItem request, CancellationToken cancellationToken)
         {
             if (request.Duration.HasValue && request.Duration.Value > 0)
             {

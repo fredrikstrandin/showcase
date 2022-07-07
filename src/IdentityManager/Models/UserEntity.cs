@@ -13,6 +13,7 @@ namespace IdentityManager.Models
         [BsonId]
         public ObjectId SubjectId { get; set; }
 
+        public string Email { get; set; }
         /// <summary>
         /// Gets or sets the username.
         /// </summary>

@@ -10,10 +10,12 @@ namespace IdentityManager.Repository
     public class UserStoreMongoDBRepository : IUserStoreRepository
     {
         private readonly MongoContext _context;
+        private readonly ILogger<UserStoreMongoDBRepository> _logger;
 
-        public UserStoreMongoDBRepository(MongoContext context)
+        public UserStoreMongoDBRepository(MongoContext context, ILogger<UserStoreMongoDBRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         /// <summary>
@@ -84,11 +86,11 @@ namespace IdentityManager.Repository
             return false;
         }
 
-        public async Task<string> CreateUserAsync(string nickname, string hash, byte[] salt, string sub, List<Claim> claims)
+        public async Task<LoginRespons> CreateUserAsync(string nickname, string email, string hash, byte[] salt, List<Claim> claims)
         {
             var user = new UserEntity()
             {
-                SubjectId = ObjectId.Parse(sub),
+                Email = email,
                 Username = nickname,
                 UsernameNormalize = nickname.ToLower(),
                 Password = hash,
@@ -97,9 +99,18 @@ namespace IdentityManager.Repository
                 IsActive = true
             };
 
-            await _context.UserCollection.InsertOneAsync(user);
+            try
+            {
+                await _context.UserCollection.InsertOneAsync(user);
 
-            return user.SubjectId.ToString();
+                return new LoginRespons(user.SubjectId.ToString(), null);
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical("MongoDB error: {message}", e.Message);
+
+                return new LoginRespons(null, new MongoException("MongoDB Error"));
+            }
         }
     }
 }

@@ -1,10 +1,6 @@
 ﻿using CustomerManager.Interfaces;
-using Google.Protobuf;
-using MongoDB.Bson;
-using Showcase.Message;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
+using CustomerManager.Model;
+using Northstar.Message;
 using System.Threading.Tasks;
 
 namespace CustomerManager.Services;
@@ -18,25 +14,21 @@ public class MessageService : IMessageService
         _messageRepository = messageRepository;
     }
 
-    public Task SendLogin(string nickname, string password, byte[] salt, string sub, List<Claim> claims)
+    public Task SendNewUserAsync(CustomerCreateRequest request)
     {
-        IdentityMessage message = new IdentityMessage()
+        NewUserMessage newUser = new NewUserMessage()
         {
-            Id = ObjectId.GenerateNewId().ToString(),
-            Login = new Login()
-            {
-                Nickname = nickname,
-                Password = password,
-                Salt = ByteString.CopyFrom(salt),
-                Sub = sub
-            }
+            Id = request.Id,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            Street = request.Street,
+            Zip = request.Zip,
+            City = request.City
         };
-
-        foreach (var item in claims)
-        {
-            message.Login.Claims.Add(new Login.Types.Claim() { Type = item.Type, Value = item.Value });
-        }
-
-        return _messageRepository.SendMessageAsync(ObjectId.GenerateNewId().ToString(), message, "identity");
+        
+        CustomerKafkaMessage message = new CustomerKafkaMessage() { NewUserMessage = newUser };
+        
+        return _messageRepository.SendMessageAsync(request.Id, message, "customermanager");
     }
 }

@@ -1,8 +1,5 @@
 ﻿using LoanManager.Interface;
 using LoanManager.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,9 +19,14 @@ namespace LoanManager.Validation
             return type == LoanType.PrivateLoan;
         }
 
-        public async Task<LoanValidationRespons> Validation(LoanApplicationItem item, CancellationToken cancellationToken)
+        public async Task<LoanValidationRespons> Validation(LoanApplicationCreateItem item, CancellationToken cancellationToken)
         {
-            int MonthlyIncome = await _customerRepository.GetMonthlyIncomeAsync(item.UserId, cancellationToken);
+            int? MonthlyIncome = await _customerRepository.GetMonthlyIncomeAsync(item.UserId, cancellationToken);
+
+            if (MonthlyIncome == null)
+            {
+                return new LoanValidationRespons(false, "The monthly salary is unknow.");
+            }
 
             if (MonthlyIncome <= 31000)
             {

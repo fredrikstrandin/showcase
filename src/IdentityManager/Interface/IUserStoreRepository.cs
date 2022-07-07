@@ -11,5 +11,5 @@ public interface IUserStoreRepository
     Task<(string Hash, byte[] Salt)> FindHashPasswordAndSaltByUsernameAsync(string username);
     Task<UserItem> AddProvisionUserAsync(string name, string provider, string userId, ICollection<Claim> claims);
     Task<bool> IsActive(string username);
-    Task<string> CreateUserAsync(string nickname, string hash, byte[] salt, string sub, List<Claim> claims);
+    Task<LoginRespons> CreateUserAsync(string nickname, string email, string hash, byte[] salt, List<Claim> claims);
 }

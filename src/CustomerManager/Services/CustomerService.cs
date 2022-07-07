@@ -1,6 +1,7 @@
 ﻿using CustomerManager.Interfaces;
 using CustomerManager.Model;
 using IdentityModel;
+using MongoDB.Bson;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
@@ -12,25 +13,19 @@ namespace CustomerManager.Services
     {
         public readonly ICustomerRepository _customerRepository;
         public readonly IPasswordService _passwordService;
-        public readonly IMessageService _messageService;
-
-        public CustomerService(ICustomerRepository customerRepository, IPasswordService passwordService, IMessageService messageService)
+        
+        public CustomerService(ICustomerRepository customerRepository, IPasswordService passwordService)
         {
             _customerRepository = customerRepository;
             _passwordService = passwordService;
-            _messageService = messageService;
         }
 
         public async Task<CustomerRespons> CreateAsync(CustomerCreateRequest request, CancellationToken cancellationToken)
         {
-            byte[] salt = _passwordService.GenerateSalt();
-            string hash = _passwordService.CreateHash(request.Password, salt);
-
             List<Claim> claims = new List<Claim>() { new Claim(JwtClaimTypes.Name, request.FirstName) };
 
             CustomerItem item = new CustomerItem(
-                null,
-                request.PersonalNumber,
+                request.Id,
                 request.FirstName,
                 request.LastName,
                 request.Email,
@@ -40,11 +35,6 @@ namespace CustomerManager.Services
                 request.MonthlyIncome);
 
             var ret = await _customerRepository.CreateAsync(item, cancellationToken);
-
-            if (ret.IsSuccess)
-            {
-                await _messageService.SendLogin(request.Email, hash, salt, ret.Id, claims);
-            }
 
             return ret;
         }
@@ -62,6 +52,11 @@ namespace CustomerManager.Services
         public async Task<CustomerItem> GetByIdAsync(string userId, CancellationToken cancellationToken)
         {
             return await _customerRepository.GetByIdAsync(userId, cancellationToken);
+        }
+
+        public async Task<int> GetMonthlyIncomeAsync(string Id, CancellationToken cancellationToken)
+        {
+            return await _customerRepository.GetMonthlyIncomeAsync(Id, cancellationToken);
         }
     }
 }

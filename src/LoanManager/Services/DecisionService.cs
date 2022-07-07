@@ -1,6 +1,6 @@
 ﻿using LoanManager.Interface;
 using LoanManager.Model;
-using LoanManager.Validation;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -11,13 +11,15 @@ namespace LoanManager.Services
     public class DecisionService : IDecisionService
     {
         private readonly IEnumerable<ILoanApplicationValidation> _loanRequestValidation;
+        private readonly IGenerateId _generateId;
 
-        public DecisionService(IEnumerable<ILoanApplicationValidation> loanRequestValidation)
+        public DecisionService(IEnumerable<ILoanApplicationValidation> loanRequestValidation, IGenerateId generateId)
         {
             _loanRequestValidation = loanRequestValidation;
+            _generateId = generateId;
         }
 
-        public async Task<DecisionItem> ApplayLoanAsync(LoanApplicationItem item, CancellationToken cancellationToken)
+        public async Task<DecisionItem> ApplayLoanAsync(LoanApplicationCreateItem item, CancellationToken cancellationToken)
         {
             bool isApproved = true;
             List<string> reasons = new List<string>();
@@ -36,7 +38,7 @@ namespace LoanManager.Services
                 }
             }
 
-            return new DecisionItem(item.Id, DateTime.UtcNow, isApproved, reasons);
+            return new DecisionItem(item.UserId, _generateId.GenerateNewId(), DateTime.UtcNow, isApproved, reasons);
         }
     }
 }

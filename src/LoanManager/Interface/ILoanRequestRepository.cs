@@ -8,9 +8,9 @@ namespace LoanManager.Interface;
 
 public interface ILoanRequestRepository
 {
-    Task<LoanApplicationItem> GetByLoanIdAsync(string loanId, CancellationToken cancellationToken);
+    Task<LoanApplicationItem> GetByLoanIdAsync(string userId, string loanId, CancellationToken cancellationToken);
     Task<List<LoanApplicationItem>> GetByUserIdAsync(string userId, CancellationToken cancellationToken);
-    Task<LoanRequestRespons> CreateAsync(LoanApplicationCreateRequest request, CancellationToken cancellationToken);
+    Task<LoanRequestRespons> CreateAsync(string userId, LoanApplicationItem item, CancellationToken cancellationToken);
     Task<LoanRequestRespons> UpdateAsync(LoanApplicationItem item, CancellationToken cancellationToken);
     Task<LoanRequestRespons> DeleteAsync(string loanId, CancellationToken cancellationToken);
 }

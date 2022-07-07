@@ -1,4 +1,4 @@
-﻿using CustomerManager.RPC;
+﻿using Northstar.Message;
 using Grpc.Core;
 using Grpc.Net.Client;
 using LoanManager.Interface;
@@ -14,27 +14,29 @@ namespace LoanManager.Repository
 {
     public class CustomerRepository : ICustomerRepository
     {
-        public async Task<int> GetMonthlyIncomeAsync(string id, CancellationToken cancellationToken)
+        private readonly CustomerGrpcService.CustomerGrpcServiceClient _client;
+
+        public CustomerRepository(CustomerGrpcService.CustomerGrpcServiceClient client)
         {
-            using (GrpcChannel channel = GrpcChannel.ForAddress("https://localhost:5002"))
+            _client = client;
+        }
+
+        public async Task<int?> GetMonthlyIncomeAsync(string id, CancellationToken cancellationToken)
+        {
+            try
             {
-                var client = new CustomerRpc.CustomerRpcClient(channel);
-
-                try
+                MonthlyIncomeRequest req = new MonthlyIncomeRequest()
                 {
-                    MonthlyIncomeRequest req = new MonthlyIncomeRequest()
-                    {
-                        Id = id
-                    };
+                    Id = id
+                };
 
-                    var reply = await client.GetMonthlyIncomeAsync(req, cancellationToken: cancellationToken);
+                var reply = await _client.GetMonthlyIncomeAsync(req, cancellationToken: cancellationToken);
 
-                    return reply.MonthlyIncome;
-                }
-                catch (RpcException)
-                {
-                    return 0;
-                }
+                return reply.MonthlyIncome;
+            }
+            catch (RpcException)
+            {
+                return null;
             }
         }
     }

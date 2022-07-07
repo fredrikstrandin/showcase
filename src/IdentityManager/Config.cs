@@ -24,13 +24,14 @@ public static class Config
       {
     new ApiScope("bankapi.customer"),
     new ApiScope("bankapi.employeer"),
+    new ApiScope("bankapi.loanadministrator"),
     new ApiScope("bankapi.advisor")
       };
     public static IEnumerable<ApiResource> ApiResources => new[]
     {
   new ApiResource("bankapi")
   {
-    Scopes = new List<string> { "bankapi.customer", "bankapi.employeer", "bankapi.advisor" },
+    Scopes = new List<string> { "bankapi.customer", "bankapi.employeer", "bankapi.loanadministrator", "bankapi.advisor" },
     ApiSecrets = new List<Secret> {new Secret("ScopeSecret".Sha256())},
     UserClaims = new List<string> {"role"}
   }

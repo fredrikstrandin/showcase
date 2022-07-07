@@ -34,7 +34,9 @@ namespace LoanManager.Controllers
         [HttpGet("loanid/{loanid}")]
         public async Task<ActionResult<LoanApplicationItem>> GetByLoanId(string loanid, CancellationToken cancellationToken)
         {
-            LoanApplicationItem item = await _loanRequestService.GetByLoanIdAsync(loanid, cancellationToken);
+            string userId = this.User.Claims.FirstOrDefault(i => i.Type == "sub").Value;
+
+            LoanApplicationItem item = await _loanRequestService.GetByLoanIdAsync(userId, loanid, cancellationToken);
 
             if(item == null)
             {
@@ -47,11 +49,13 @@ namespace LoanManager.Controllers
         [HttpPost]
         public async Task<ActionResult<LoanApplicationRespons>> Create([FromBody] LoanApplicationCreateRequest item, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Loan request from {item.UserId} has started.");
+            string userId = this.User.Claims.FirstOrDefault(i => i.Type == "sub").Value;
 
-            LoanApplicationRespons ret = await _loanRequestService.CreateAsync(item, cancellationToken);
+            _logger.LogInformation($"Loan request from {userId} has started.");
 
-            _logger.LogInformation($"Loan request from {item.UserId} has has ended.");
+            LoanApplicationRespons ret = await _loanRequestService.CreateAsync(userId, item, cancellationToken);
+
+            _logger.LogInformation($"Loan request from {userId} has has ended.");
 
             if (ret.IsSuccess)
             {
@@ -66,9 +70,11 @@ namespace LoanManager.Controllers
         [HttpPut]
         public async Task<ActionResult<LoanApplicationRespons>> Update(LoanApplicationUpdateRequest item, CancellationToken cancellationToken)
         {
+            string userId = this.User.Claims.FirstOrDefault(i => i.Type == "sub").Value;
+
             _logger.LogInformation($"Update for loan request id {item.Id} has started.");
 
-            LoanApplicationRespons ret = await _loanRequestService.UpdateAsync(item, cancellationToken);
+            LoanApplicationRespons ret = await _loanRequestService.UpdateAsync(userId, item, cancellationToken);
 
             _logger.LogInformation($"Update for loan request id {item.Id} has has ended.");
 
@@ -85,6 +91,13 @@ namespace LoanManager.Controllers
         [HttpDelete("{loanId}")]
         public async Task<ActionResult<LoanApplicationRespons>> Delete(string loanId, CancellationToken cancellationToken)
         {
+            string role = this.User.Claims.FirstOrDefault(i => i.Type == "scope" && i.Value == "bankapi.loanadministrator")?.Value ?? String.Empty; 
+
+            if(role != "bankapi.loanadministrator")
+            {
+                return Unauthorized();
+            }
+
             LoanApplicationRespons ret = await _loanRequestService.DeleteAsync(loanId, cancellationToken);
 
             if (ret.IsSuccess)

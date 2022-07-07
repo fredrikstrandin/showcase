@@ -6,5 +6,5 @@ namespace LoanManager.Interface;
 
 public interface IDecisionService
 {
-    Task<DecisionItem> ApplayLoanAsync(LoanApplicationItem item, CancellationToken cancellationToken);
+    Task<DecisionItem> ApplayLoanAsync(LoanApplicationCreateItem item, CancellationToken cancellationToken);
 }

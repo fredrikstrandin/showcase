@@ -46,14 +46,11 @@ namespace LoanManager.Model
                 return null;
             }
 
-            return new LoanApplicationItem()
-            {
-                Id = entity.LoanId.ToString(),
-                UserId = entity.UserId.ToString(),
-                Amount = entity.Amount,
-                Duration = entity.Duration,
-                Type = entity.Type
-            };
+            return new LoanApplicationItem(
+                entity.LoanId.ToString(),
+                entity.Type,
+                entity.Amount,
+                entity.Duration);
         }
     }
 }

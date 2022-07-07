@@ -23,12 +23,12 @@ namespace LoanManager.Repository
             _context = context;
             _logger = logger;
         }
-        public async Task<LoanRequestRespons> CreateAsync(LoanApplicationItem item, CancellationToken cancellationToken)
+        public async Task<LoanRequestRespons> CreateAsync(string userId, LoanApplicationItem item, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Creating loan.");
             try
             {
-                _logger.LogInformation($"Customer {item.UserId} loan request is creating.");
+                _logger.LogInformation($"Customer {userId} loan request is creating.");
 
                 if (!ObjectId.TryParse(item.Id, out ObjectId id))
                 {
@@ -37,9 +37,9 @@ namespace LoanManager.Repository
                     return new LoanRequestRespons(null, false);
                 }
 
-                if (!ObjectId.TryParse(item.UserId, out ObjectId userId))
+                if (!ObjectId.TryParse(userId, out ObjectId uid))
                 {
-                    _logger.LogWarning($"UserId {item.UserId} is not a ObjectId.");
+                    _logger.LogWarning($"UserId {userId} is not a ObjectId.");
 
                     return new LoanRequestRespons(null, false);
                 }
@@ -47,7 +47,7 @@ namespace LoanManager.Repository
                 RejectionEntity rejected = new RejectionEntity()
                 {
                     LoanId  = id,
-                    UserId = userId,
+                    UserId = uid,
                     Created = DateTime.UtcNow,
                     Amount = item?.Amount ?? 0,
                     Duration = item?.Duration ?? 0,

@@ -1,9 +1,0 @@
-﻿syntax = "proto3";
-
-package showcase.message;
-
-message Person {
-    string Firstname = 1;
-    string Lastname = 2;
-    string Street = 3;
-}

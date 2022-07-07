@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace LoanManager.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class CustomerController : ControllerBase
     {
         private readonly ILogger<CustomerController> _logger;
@@ -56,19 +56,19 @@ namespace LoanManager.Controllers
         [HttpPost]
         public async Task<ActionResult<CustomerRespons>> Create([FromBody] CustomerCreateRequest item, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Loan request from {item.PersonalNumber} has started.");
+            _logger.LogInformation($"Loan request from {item.Id} has started.");
 
             CustomerRespons ret = await _customerService.CreateAsync(item, cancellationToken);
 
-            _logger.LogInformation($"Loan request from {item.PersonalNumber} has has ended.");
+            _logger.LogInformation($"Loan request from {item.Id} has has ended.");
 
-            if (ret.IsSuccess)
+            if (ret.Error == null)
             {
                 return Ok(ret);
             }
             else
             {
-                return NotFound(ret);
+                return NotFound(ret.Error.Message);
             }
         }
 
@@ -84,13 +84,13 @@ namespace LoanManager.Controllers
 
             _logger.LogInformation($"Loan request from {request.Id} has has ended.");
 
-            if (ret.IsSuccess)
+            if (ret == null)
             {
                 return Ok(ret);
             }
             else
             {
-                return NotFound(ret);
+                return NotFound(ret.Error.Message);
             }
         }
     }

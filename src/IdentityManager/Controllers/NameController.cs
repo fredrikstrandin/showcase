@@ -1,5 +1,4 @@
-﻿using IdentityManager.Backgrondservices;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityManager.Controllers
 {

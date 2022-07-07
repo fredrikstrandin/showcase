@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using CommonLib.Exceptions;
 
 namespace CustomerManager.Repository
 {
@@ -27,7 +28,7 @@ namespace CustomerManager.Repository
         {
             var query =
                 from x in _context.Customers.AsQueryable<CustomerEntity>()
-                select new CustomerItem(x.Id.ToString(), x.PersonalNumber, x.FirstName, x.LastName, x.Email, x.Street, x.Zip, x.City, x.MonthlyIncome);
+                select new CustomerItem(x.Id.ToString(), x.FirstName, x.LastName, x.Email, x.Street, x.Zip, x.City, x.MonthlyIncome);
 
             return await query.ToListAsync(cancellationToken);
         }
@@ -70,7 +71,9 @@ namespace CustomerManager.Repository
 
             if (!ObjectId.TryParse(request.Id, out ObjectId customerId))
             {
-                return new CustomerRespons(request.Id, false);
+                _logger.LogWarning("Id id not a ObjectId");
+
+                return new CustomerRespons(request.Id, new FormatException("Id id not a ObjectId"));
             }
 
             FilterDefinition<CustomerEntity> filter = Builders<CustomerEntity>.Filter
@@ -129,48 +132,40 @@ namespace CustomerManager.Repository
             {
                 _logger.LogInformation($"Kund {request.Id} skapas.");
 
-                return new CustomerRespons(request.Id.ToString(), true);
+                return new CustomerRespons(request.Id.ToString(), null);
             }
             else
             {
-                return new CustomerRespons(ObjectId.Empty.ToString(), false);
+                return new CustomerRespons(ObjectId.Empty.ToString(), new NotFoundException($"Not found customer {request.Id}"));
             }
         }
 
         public async Task<CustomerRespons> CreateAsync(CustomerItem item, CancellationToken cancellationToken)
         {
-            try
+            _logger.LogInformation($"Customer {item.Id} start created.");
+
+            //För att kolla om användaren redan finns
+            var query = from x in _context.Customers.AsQueryable<CustomerEntity>()
+                        where x.Email == item.Email
+                        select x.Email;
+
+            var email = await query.FirstOrDefaultAsync(cancellationToken);
+
+            if (email == null)
             {
-                _logger.LogInformation($"Customer {item.PersonalNumber} start created.");
+                CustomerEntity entity = item;
+                await _context.Customers.InsertOneAsync(entity);
 
-                //För att kolla om användaren redan finns
-                var query = from x in _context.Customers.AsQueryable<CustomerEntity>()
-                            where x.PersonalNumber == item.PersonalNumber
-                            select x.PersonalNumber;
 
-                var pnr = await query.FirstOrDefaultAsync(cancellationToken);
+                _logger.LogInformation($"Customer {item.Id} was created.");
 
-                if (pnr == null)
-                {
-                    CustomerEntity entity = item;
-                    await _context.Customers.InsertOneAsync(entity);
-
-                    
-                    _logger.LogInformation($"Customer {item.PersonalNumber} was created.");
-
-                    return new CustomerRespons(entity.Id.ToString(), true);
-                }
-                else
-                {
-
-                    _logger.LogWarning($"Customer {item.PersonalNumber} was not created.");
-
-                    return new CustomerRespons(null, false);
-                }
+                return new CustomerRespons(entity.Id.ToString(), null);
             }
-            catch (Exception)
+            else
             {
-                return new CustomerRespons(null, false);
+                _logger.LogWarning("Customer {Id} with {Email} allready exist.", item.Id, item.Email);
+
+                return new CustomerRespons(null, new DuplicateException($"Customer {item.Id} with {item.Email} allready exist."));
             }
         }
     }

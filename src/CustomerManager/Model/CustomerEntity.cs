@@ -10,12 +10,9 @@ namespace CustomerManager.Model
         //Jag använder inte personnummer som id på grund av GDPR. Man vill inte skicka runt det på siten.
         [BsonId]
         public ObjectId Id { get; set; }
-        public string PersonalNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public string Hash { get; set; }
-        public byte[] Salt { get; set; }
         public string Street { get; set; }
         public string Zip { get; set; }
         public string City { get; set; }
@@ -28,17 +25,24 @@ namespace CustomerManager.Model
                 return null;
             }
 
-            return new CustomerEntity()
+            if(ObjectId.TryParse(item.Id, out ObjectId id))
             {
-                PersonalNumber = item.PersonalNumber,
-                FirstName = item.FirstName,
-                LastName = item.LastName,
-                Email = item.Email,
-                Street = item.Street,
-                Zip = item.Zip,
-                City = item.City,
-                MonthlyIncome = item?.MonthlyIncome ?? 0
-            };
+                return new CustomerEntity()
+                {
+                    Id = id,
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    Email = item.Email,
+                    Street = item.Street,
+                    Zip = item.Zip,
+                    City = item.City,
+                    MonthlyIncome = item?.MonthlyIncome ?? 0
+                };
+            }
+            else
+            {
+                throw new ArgumentException("Id is not ObjectId");
+            }
         }
 
         public static implicit operator CustomerItem(CustomerEntity entity)
@@ -48,39 +52,7 @@ namespace CustomerManager.Model
                 return null;
             }
 
-            return new CustomerItem(entity.Id.ToString(), entity.PersonalNumber, entity.FirstName, entity.LastName, entity.Email, entity.Street, entity.Zip, entity.City, entity?.MonthlyIncome ?? 0);
-        }
-
-        public static implicit operator CustomerEntity(CustomerCreateItem item)
-        {
-            if (item == null)
-            {
-                return null;
-            }
-
-            return new CustomerEntity()
-            {
-                PersonalNumber = item.PersonalNumber,
-                FirstName = item.FirstName,
-                LastName = item.LastName,
-                Email = item.Email,
-                Hash = item.Hash,
-                Salt = item.Salt,
-                Street = item.Street,
-                Zip = item.Zip,
-                City = item.City,
-                MonthlyIncome = item?.MonthlyIncome ?? 0
-            };
-        }
-
-        public static implicit operator CustomerCreateItem(CustomerEntity entity)
-        {
-            if (entity == null)
-            {
-                return null;
-            }
-
-            return new CustomerCreateItem(entity.PersonalNumber, entity.FirstName, entity.LastName, entity.Email, entity.Hash, entity.Salt, entity.Street, entity.Zip, entity.City, entity?.MonthlyIncome ?? 0);
+            return new CustomerItem(entity.Id.ToString(), entity.FirstName, entity.LastName, entity.Email, entity.Street, entity.Zip, entity.City, entity?.MonthlyIncome ?? 0);
         }
     }
 }

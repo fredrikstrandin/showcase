@@ -2,10 +2,9 @@
 {
     public class CustomerItem
     {
-        public CustomerItem(string id, string personalNumber, string firstName, string lastName, string email, string street, string zip, string city, int monthlyIncome)
+        public CustomerItem(string id, string firstName, string lastName, string email, string street, string zip, string city, int monthlyIncome)
         {
             Id = id;
-            PersonalNumber = personalNumber;
             FirstName = firstName;
             LastName = lastName;
             Email = email;
@@ -16,7 +15,6 @@
         }
 
         public string Id { get; }
-        public string PersonalNumber { get; }
         public string FirstName { get; }
         public string LastName { get; }
         public string Email { get; }

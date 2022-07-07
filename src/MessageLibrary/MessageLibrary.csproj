@@ -7,25 +7,22 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="proto\login.proto" />
-		<None Remove="proto\message.proto" />
-		<None Remove="proto\person.proto" />
+	  <None Remove="proto\CustomerManager\customer.kafka.proto" />
+	  <None Remove="proto\IdentityManager\identity.proto" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Google.Protobuf" Version="3.20.1" />
-		<PackageReference Include="Google.Protobuf.Tools" Version="3.20.1" />
-		<PackageReference Include="Grpc.Tools" Version="2.45.0">
+    <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.41.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Protobuf Include="proto\login.proto" />
-		<Protobuf Include="proto\message.proto" />
-		<Protobuf Include="proto\person.proto" />
+  <ItemGroup>
+		<Protobuf Include="proto\CustomerManager\customer.kafka.proto" />
+		<Protobuf Include="proto\CustomerManager\customer.proto" />
+		<Protobuf Include="proto\IdentityManager\identity.proto" />
 	</ItemGroup>
 
 </Project>

@@ -6,12 +6,19 @@ using System.Threading.Tasks;
 namespace LoanManager.Model
 {
     public class LoanApplicationItem
-    {
-        public string Id{ get; set; }
-        public string UserId { get; set; }
-        public LoanType Type { get; set; }
-        public int? Amount { get; set; }
+    {   
+        public LoanApplicationItem(string id, LoanType type, int? amount, int? duration)
+        {
+            Id = id;
+            Type = type;
+            Amount = amount;
+            Duration = duration;
+        }
+        public string Id { get; set; }
+        
+        public LoanType Type { get; }
+        public int? Amount { get; }
         //Antar att man inte går in på delar av månader
-        public int? Duration { get; set; }        
+        public int? Duration { get; }        
     }
 }

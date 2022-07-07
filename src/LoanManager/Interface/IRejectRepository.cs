@@ -7,5 +7,5 @@ namespace LoanManager.Interface;
 
 public interface IRejectRepository
 {
-    Task<LoanRequestRespons> CreateAsync(LoanApplicationItem item, CancellationToken cancellationToken);
+    Task<LoanRequestRespons> CreateAsync(string userId, LoanApplicationItem item, CancellationToken cancellationToken);
 }

@@ -1,0 +1,37 @@
+﻿syntax = "proto3";
+
+package northstar.message;
+
+service IdentityGrpcService {
+    rpc Create(LoginMessage) returns (LoginResponsMessage);
+}
+
+message LoginMessage {
+    string Id = 1;
+    string Email = 2;
+    string Nickname = 3;
+    string Password = 4;
+    
+    repeated ClaimMessage Claims = 6;
+}
+
+message ClaimMessage {
+    string Type = 1;
+    string Value = 2;
+}
+
+message LoginCreateSuccessMessage {
+    string Id = 1;
+}
+
+message IdentityErrorMessage {
+    repeated string Message = 1;
+}
+
+message LoginResponsMessage {
+    reserved 1;
+    oneof MessageType {                      
+        LoginCreateSuccessMessage success = 2;
+        IdentityErrorMessage error = 3;       
+    }
+}

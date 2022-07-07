@@ -16,7 +16,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityManager", "src\Iden
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestdataGenerator", "src\TestdataGenerator\TestdataGenerator.csproj", "{26B64DB1-3AD3-4148-AE4E-4910B28E173A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageLibrary", "src\MessageLibrary\MessageLibrary.csproj", "{F6748DC5-B859-4D1A-AA1E-ED413517A27D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageLibrary", "src\MessageLibrary\MessageLibrary.csproj", "{F6748DC5-B859-4D1A-AA1E-ED413517A27D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NorthStarGraphQL", "src\NorthStarGraphQL\NorthStarGraphQL.csproj", "{1790F6C9-B010-4D68-B2A9-C92AE76ECC5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonLib", "src\CommonLib\CommonLib.csproj", "{F307DF75-D28F-40D1-823E-CB0AFEB6AA8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +48,14 @@ Global
 		{F6748DC5-B859-4D1A-AA1E-ED413517A27D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6748DC5-B859-4D1A-AA1E-ED413517A27D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6748DC5-B859-4D1A-AA1E-ED413517A27D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1790F6C9-B010-4D68-B2A9-C92AE76ECC5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1790F6C9-B010-4D68-B2A9-C92AE76ECC5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1790F6C9-B010-4D68-B2A9-C92AE76ECC5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1790F6C9-B010-4D68-B2A9-C92AE76ECC5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F307DF75-D28F-40D1-823E-CB0AFEB6AA8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F307DF75-D28F-40D1-823E-CB0AFEB6AA8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F307DF75-D28F-40D1-823E-CB0AFEB6AA8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F307DF75-D28F-40D1-823E-CB0AFEB6AA8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

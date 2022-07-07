@@ -11,5 +11,6 @@ namespace CustomerManager.Services
         Task<CustomerRespons> UpdateAsync(CustomerUpdateRequest reques, CancellationToken cancellationTokent);
         Task<CustomerItem> GetByIdAsync(string userId, CancellationToken cancellationToken);
         Task<List<CustomerItem>> GetAsync(CancellationToken cancellationToken);
+        Task<int> GetMonthlyIncomeAsync(string Id, CancellationToken cancellationToken);
     }
 }
