@@ -1,8 +1,8 @@
 ﻿namespace NorthStarGraphQL.Models;
 
-public class CustomerCreateItem
+public class UserCreateItem
 {
-    public CustomerCreateItem(string id, string firstName, string lastName, string email, string street, string zip, string city, int monthlyIncome)
+    public UserCreateItem(string id, string firstName, string lastName, string email, string street, string zip, string city, int monthlyIncome)
     {
         Id = id;
         FirstName = firstName;

@@ -4,11 +4,25 @@ using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using System.Security.Claims;
 using Northstar.Message;
+using NorthStarGraphQL.Interface;
+using NorthStarGraphQL.Models;
+using HotChocolate.Subscriptions;
+using NorthStarGraphQL.GraphQL;
 
 namespace NorthStarGraphQL.Backgrondservices
 {
     public class KafkaMessagerService : IHostedService
     {
+        private readonly ILogger<KafkaMessagerService> _logger;
+        private readonly IIdentityService _identityService;
+        private readonly ITopicEventSender _topicEventSender;
+
+        public KafkaMessagerService(ILogger<KafkaMessagerService> logger, IIdentityService identityService, ITopicEventSender topicEventSender)
+        {
+            _logger = logger;
+            _identityService = identityService;
+            _topicEventSender = topicEventSender;
+        }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -61,8 +75,22 @@ namespace NorthStarGraphQL.Backgrondservices
                                         Console.WriteLine("None");
                                         break;
                                     case CustomerKafkaMessage.MessageTypeOneofCase.NewUserMessage:
-                                        Console.WriteLine($"Firstname: {consumeResult.Message.Value.NewUserMessage.FirstName}");
-                                        Console.WriteLine($"LastName: {consumeResult.Message.Value.NewUserMessage.LastName}");
+                                        var newUserMessage = consumeResult.Message.Value.NewUserMessage;
+
+                                        _logger.LogInformation($"NewUserMessage was added with id {newUserMessage.Id}");
+
+
+                                        await _topicEventSender.SendAsync(nameof(NorthStarSubscription.NewUserAdded), new UserCreateItem(
+                                            newUserMessage.Id,
+                                            newUserMessage.FirstName,
+                                            newUserMessage.LastName,
+                                            newUserMessage.Email,
+                                            newUserMessage.Street,
+                                            newUserMessage.Zip,
+                                            newUserMessage.City,
+                                            0
+                                        ));
+
                                         break;
                                     default:
                                         Console.WriteLine("Error");

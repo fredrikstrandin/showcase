@@ -1,83 +1,88 @@
 ﻿using CustomerManager.Model;
-using GraphQL;
-using GraphQL.Types;
+using HotChocolate.AspNetCore.Authorization;
 using Northstar.Message;
-using NorthStarGraphQL.GraphQL.Types;
 using NorthStarGraphQL.Interface;
 using NorthStarGraphQL.Models;
+using System.Security.Claims;
+using static HotChocolate.ErrorCodes;
 
-namespace NorthtarGraphQL.GraphQL;
+namespace NorthStarGraphQL.GraphQL;
 
-public class NorthStarMutation : ObjectGraphType
+public class NorthStarMutation
 {
     readonly private ICustomerRepository _customerRepository;
     readonly private IIdentityService _identityService;
+    readonly private ILogger<NorthStarMutation> _logger;
 
-    public NorthStarMutation(ICustomerRepository customerRepository, IIdentityService identityService)
+    public NorthStarMutation(ICustomerRepository customerRepository, IIdentityService identityService, ILogger<NorthStarMutation> logger)
     {
         _customerRepository = customerRepository;
         _identityService = identityService;
-
-        FieldAsync<CustomerGraphType>(
-            "createCustomer",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "nickName" },
-                new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "firstName" },
-                new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "lastName" },
-                new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "email" },
-                new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "password" },
-                new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "street" },
-                new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "zip" },
-                new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "city" },
-                new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "monthlyIncome" }
-            ),
-            resolve: async context =>
-            {
-                LoginCreateItem loginItem = new LoginCreateItem(
-                        context.GetArgument<string>("nickName"),
-                        context.GetArgument<string>("email"),
-                        context.GetArgument<string>("password"),
-                        new List<ClaimItem>() { new ClaimItem("userType", "member") });
-
-                var login = await _identityService.CreateLoginAsync(loginItem);
-
-                if(login.error == null)
-                {
-                    CustomerCreateItem customerItem = new CustomerCreateItem(
-                        login.id,
-                        context.GetArgument<string>("firstName"),
-                        context.GetArgument<string>("lastName"),
-                        context.GetArgument<string>("email"),
-                        context.GetArgument<string>("street"),
-                        context.GetArgument<string>("zip"),
-                        context.GetArgument<string>("city"),
-                        context.GetArgument<int>("monthlyIncome"));
-
-                    var ret = await _customerRepository.CreateAsync(customerItem, context.CancellationToken);
-
-                    if (string.IsNullOrWhiteSpace(ret.error))
-                    {
-                        if (ret.id != null)
-                        {
-                            return new CustomerItem(ret.id,
-                                customerItem.Id,
-                                customerItem.FirstName,
-                                customerItem.LastName,
-                                customerItem.Email,
-                                customerItem.Street,
-                                customerItem.Zip,
-                                customerItem.City,
-                                customerItem?.MonthlyIncome ?? 0);
-                        }
-                    }
-                    else
-                    {
-                        context.Errors.Add(new ExecutionError(ret.error));
-                    }
-                }
-
-                return null;
-            }
-        );
+        _logger = logger;
     }
+
+    [Authorize]
+    public async Task<UserItem> UpdateUserAsync(string test, ClaimsPrincipal claims)
+    {
+        _logger.LogDebug(test);
+
+        foreach (var item in claims.Claims)
+        {
+            _logger.LogDebug($"{item.Type}: {item.Value}");
+        }
+
+        return UserItem.Default();
+    }
+
+    public async Task<UserItem> CreateUserAsync(string firstName, string lastName, string email, string nickname, string password, string street, string zip, string city)
+    {
+        LoginCreateItem loginItem = new LoginCreateItem(
+                nickname,
+                email,
+                password,
+                new List<ClaimItem>() { new ClaimItem("userType", "member") });
+
+        var login = await _identityService.CreateLoginAsync(loginItem);
+
+        if (login.error == null)
+        {
+            UserCreateItem customerItem = new UserCreateItem(
+                login.id,
+                firstName,
+                lastName,
+                email,
+                street,
+                zip,
+                city,
+                0);
+
+            var ret = await _customerRepository.CreateAsync(customerItem, CancellationToken.None);
+
+            if (string.IsNullOrWhiteSpace(ret.error))
+            {
+                if (ret.id != null)
+                {
+                    return new UserItem(ret.id,
+                        customerItem.FirstName,
+                        customerItem.LastName,
+                        customerItem.Email,
+                        customerItem.Street,
+                        customerItem.Zip,
+                        customerItem.City,
+                        customerItem?.MonthlyIncome ?? 0);
+                }
+            }
+            else
+            {
+                throw new Exception(ret.error);
+            }
+        }
+        else
+        {
+            throw new Exception(login.error);
+        }
+
+        return null;
+    }
+
 }

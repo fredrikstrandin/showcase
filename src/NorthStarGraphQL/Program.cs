@@ -1,20 +1,30 @@
-using GraphQL;
-using GraphQL.MicrosoftDI;
-using GraphQL.Server;
-using GraphQL.SystemTextJson;
-using GraphQL.Types;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using NorthStarGraphQL.Backgrondservices;
 using NorthStarGraphQL.Extention;
+using NorthStarGraphQL.GraphQL;
 using NorthStarGraphQL.Interface;
 using NorthStarGraphQL.Repository;
 using NorthStarGraphQL.Services;
-using NorthtarGraphQL.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// add notes schema
-builder.Services.AddSingleton<ISchema, NorthStarSchema>(services => new NorthStarSchema(new SelfActivatingServiceProvider(services)));
+builder.Services
+    .AddGraphQLServer()
+    .AddAuthorization()
+    .AddQueryType<NorthStarQuery>()
+    .AddMutationType<NorthStarMutation>()
+    .AddSubscriptionType<NorthStarSubscription>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt =>
+    {
+        opt.Authority = "https://localhost:5004";
+        opt.Audience = "bankapi";
+
+        opt.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+    });
+
+builder.Services.AddInMemorySubscriptions();
 
 builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
 
@@ -22,14 +32,6 @@ builder.Services.AddSingleton<IIdentityService, IdentityService>();
 builder.Services.AddSingleton<IIdentityRepository, IdentityRepository>();
 
 builder.Services.AddHostedService<KafkaMessagerService>();
-
-
-// register graphQL
-builder.Services.AddGraphQL(options =>
-{
-    options.EnableMetrics = true;
-})
-    .AddSystemTextJson();
 
 builder.Services.AddClients(builder.Configuration);
 // default setup
@@ -45,18 +47,22 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GraphQLNetExample v1"));
-    // add altair UI to development only
-    app.UseGraphQLAltair();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NorthGraphQL v1"));
 }
+
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseWebSockets();
 
-// make sure all our schemas registered to route
-app.UseGraphQL<ISchema>();
+app.UseEndpoints(endpoints => {
+    endpoints.MapGraphQL();
+    endpoints.MapBananaCakePop("/graphql/ui");
+});
 
 app.Run();

@@ -32,7 +32,7 @@ builder.Services.AddValidations();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
     {
-        opt.Authority = "https://localhost:7244";
+        opt.Authority = "https://localhost:5004";
         opt.Audience = "bankapi";
 
         opt.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };

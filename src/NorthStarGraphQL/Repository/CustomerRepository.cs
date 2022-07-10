@@ -16,7 +16,7 @@ public class CustomerRepository : ICustomerRepository
         _logger = logger;
     }
 
-    public async Task<(string id, string error)> CreateAsync(CustomerCreateItem item, CancellationToken cancellationToken)
+    public async Task<(string id, string error)> CreateAsync(UserCreateItem item, CancellationToken cancellationToken)
     {
         try
         {
