@@ -2,13 +2,14 @@ global:
   scrape_interval: 30s
   scrape_timeout: 10s
 
-rule_files:
-  - alert.yml
-
 scrape_configs:
   - job_name: services
     metrics_path: /metrics
     static_configs:
       - targets:
           - 'prometheus:9090'
-          - 'localhost:5008'
+          - 'localhost:5100'
+          - 'localhost:5102'
+          - 'localhost:5104'
+          - 'localhost:5106'
+          - 'localhost:5108'

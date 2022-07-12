@@ -1,3 +1,4 @@
+using CommonLib.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using NorthStarGraphQL.Backgrondservices;
 using NorthStarGraphQL.Extention;
@@ -7,6 +8,8 @@ using NorthStarGraphQL.Repository;
 using NorthStarGraphQL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<KafkaSetting>(builder.Configuration.GetSection("Kafka"));
 
 builder.Services
     .AddGraphQLServer()
@@ -18,7 +21,7 @@ builder.Services
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
     {
-        opt.Authority = "https://localhost:5004";
+        opt.Authority = builder.Configuration["IdentityManager:ServerUrl"];
         opt.Audience = "bankapi";
 
         opt.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };

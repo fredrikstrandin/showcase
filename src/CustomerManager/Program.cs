@@ -1,4 +1,5 @@
 using CustomerManager.DataContexts;
+using CustomerManager.GrpcService;
 using CustomerManager.Interfaces;
 using CustomerManager.Model;
 using CustomerManager.Repository;
@@ -6,10 +7,8 @@ using CustomerManager.Services;
 using CustomerManager.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using CustomerManager.GrpcService;
 
 var builder = WebApplication.CreateBuilder(args);
 

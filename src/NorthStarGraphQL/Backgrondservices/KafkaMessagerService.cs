@@ -8,6 +8,8 @@ using NorthStarGraphQL.Interface;
 using NorthStarGraphQL.Models;
 using HotChocolate.Subscriptions;
 using NorthStarGraphQL.GraphQL;
+using Microsoft.Extensions.Options;
+using CommonLib.Model;
 
 namespace NorthStarGraphQL.Backgrondservices
 {
@@ -16,19 +18,21 @@ namespace NorthStarGraphQL.Backgrondservices
         private readonly ILogger<KafkaMessagerService> _logger;
         private readonly IIdentityService _identityService;
         private readonly ITopicEventSender _topicEventSender;
+        private readonly KafkaSetting _kafkaSettings;
 
-        public KafkaMessagerService(ILogger<KafkaMessagerService> logger, IIdentityService identityService, ITopicEventSender topicEventSender)
+        public KafkaMessagerService(ILogger<KafkaMessagerService> logger, IIdentityService identityService, ITopicEventSender topicEventSender, IOptions<KafkaSetting> kafkaSettings)
         {
             _logger = logger;
             _identityService = identityService;
             _topicEventSender = topicEventSender;
+            _kafkaSettings = kafkaSettings.Value;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            string bootstrapServers = "localhost:9092";
-            string schemaRegistryUrl = "localhost:8081";
-            string topicName = "customermanager";
+            string bootstrapServers = _kafkaSettings.bootstrapServers;
+            string schemaRegistryUrl = _kafkaSettings.schemaRegistryUrl;
+            string topicName = _kafkaSettings.topicName;
 
             var producerConfig = new ProducerConfig
             {
@@ -47,7 +51,7 @@ namespace NorthStarGraphQL.Backgrondservices
             var consumerConfig = new ConsumerConfig
             {
                 BootstrapServers = bootstrapServers,
-                GroupId = "northstar-graphql-group"
+                GroupId = _kafkaSettings.GroupId
             };
 
             CancellationTokenSource cts = new CancellationTokenSource();

@@ -1,0 +1,32 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "northstartgraphql",
+      "composeLaunchUrl": "https://localhost:5106/graphql/ui",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "grafana": "StartWithoutDebugging",
+        "loki": "StartWithoutDebugging",
+        "prometheus": "StartWithoutDebugging",
+        "relationmanager": "DoNotStart",
+        "northstartgraphql": "StartDebugging",
+        "arangodb_db_container": "StartWithoutDebugging",
+        "broker": "StartWithoutDebugging",
+        "connect": "StartWithoutDebugging",
+        "control-center": "StartWithoutDebugging",
+        "customermanager": "StartDebugging",
+        "identitymanager": "StartDebugging",
+        "ksql-datagen": "StartWithoutDebugging",
+        "ksqldb-cli": "StartWithoutDebugging",
+        "ksqldb-server": "StartWithoutDebugging",
+        "loanmanager": "StartDebugging",
+        "mongodb": "StartWithoutDebugging",
+        "rest-proxy": "StartWithoutDebugging",
+        "schema-registry": "StartWithoutDebugging",
+        "zookeeper": "StartWithoutDebugging"
+      }
+    }
+  }
+}
