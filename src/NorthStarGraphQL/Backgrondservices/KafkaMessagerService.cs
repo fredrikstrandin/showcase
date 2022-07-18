@@ -30,9 +30,9 @@ namespace NorthStarGraphQL.Backgrondservices
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            string bootstrapServers = _kafkaSettings.bootstrapServers;
-            string schemaRegistryUrl = _kafkaSettings.schemaRegistryUrl;
-            string topicName = _kafkaSettings.topicName;
+            string bootstrapServers = _kafkaSettings.BootstrapServers;
+            string schemaRegistryUrl = _kafkaSettings.SchemaRegistryUrl;
+            string topicName = _kafkaSettings.Topics["customermanager"];
 
             var producerConfig = new ProducerConfig
             {

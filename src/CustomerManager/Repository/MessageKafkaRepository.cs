@@ -1,4 +1,5 @@
-﻿using Confluent.Kafka;
+﻿using CommonLib.Model;
+using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using CustomerManager.Interfaces;
@@ -6,6 +7,7 @@ using CustomerManager.Model;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Threading.Tasks;
 
 namespace CustomerManager.Repository;
@@ -13,13 +15,13 @@ namespace CustomerManager.Repository;
 public class MessageKafkaRepository : IMessageRepository
 {
     private readonly ILogger<MessageKafkaRepository> _logger;
-    private readonly KafkaSettings _kafkaSettings;
+    private readonly KafkaSetting _kafkaSettings;
 
     private readonly ProducerConfig _producerConfig;
     private readonly SchemaRegistryConfig _schemaRegistryConfig;
     private readonly CachedSchemaRegistryClient _schemaRegistry;
 
-    public MessageKafkaRepository(IOptions<KafkaSettings> kafkaSettings, ILogger<MessageKafkaRepository> logger)
+    public MessageKafkaRepository(IOptions<KafkaSetting> kafkaSettings, ILogger<MessageKafkaRepository> logger)
     {
         _logger = logger;
         _kafkaSettings = kafkaSettings.Value;
@@ -43,18 +45,27 @@ public class MessageKafkaRepository : IMessageRepository
 
     public async Task SendMessageAsync<K, V>(K key, V message, string topicName) where V : IMessage<V>, new()
     {
-        using (var producer =
-            new ProducerBuilder<K, V>(_producerConfig)
-                .SetValueSerializer(new ProtobufSerializer<V>(_schemaRegistry))
-                .Build())
+        try
         {
-            var output = await producer
-                .ProduceAsync(topicName, new Message<K, V> { Key = key, Value = message })
-                .ContinueWith(task => task.IsFaulted
-                    ? $"error producing message: {task.Exception.Message}"
-                    : $"produced to: {task.Result.TopicPartitionOffset}");
+            using (var producer =
+                new ProducerBuilder<K, V>(_producerConfig)
+                    .SetValueSerializer(new ProtobufSerializer<V>(_schemaRegistry))
+                    .Build())
+            {
+                var output = await producer
+                    .ProduceAsync(topicName, new Message<K, V> { Key = key, Value = message })
+                    .ContinueWith(task => task.IsFaulted
+                        ? $"error producing message: {task.Exception.Message}"
+                        : $"produced to: {task.Result.TopicPartitionOffset}");
 
-            _logger.LogInformation(output);
+                _logger.LogInformation(output);
+            }
+
+        }
+        catch (Exception e)
+        {
+
+            throw;
         }
     }
 }

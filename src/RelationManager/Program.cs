@@ -1,3 +1,4 @@
+using Prometheus;
 using Serilog;
 using Serilog.Formatting.Compact;
 using Serilog.Sinks.Grafana.Loki;
@@ -21,10 +22,21 @@ builder.Host.UseSerilog((ctx, cfg) =>
 
 });
 
+builder.Services.AddHealthChecks()
+        .ForwardToPrometheus();
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
 
-app.MapGet("/", () => "Hello World!");
+app.UseRouting();
+app.UseHttpMetrics();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapMetrics();
+    endpoints.MapGet("/", () => "Hello World!");
+});
+
 
 app.Run();

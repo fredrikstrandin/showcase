@@ -1,5 +1,7 @@
-﻿using CustomerManager.Interfaces;
+﻿using CommonLib.Model;
+using CustomerManager.Interfaces;
 using CustomerManager.Model;
+using Microsoft.Extensions.Options;
 using Northstar.Message;
 using System.Threading.Tasks;
 
@@ -8,10 +10,12 @@ namespace CustomerManager.Services;
 public class MessageService : IMessageService
 {
     private readonly IMessageRepository _messageRepository;
+    private readonly KafkaSetting _kafkaSettings;
 
-    public MessageService(IMessageRepository messageRepository)
+    public MessageService(IMessageRepository messageRepository, IOptions<KafkaSetting> kafkaSettings)
     {
         _messageRepository = messageRepository;
+        _kafkaSettings = kafkaSettings.Value;
     }
 
     public Task SendNewUserAsync(CustomerCreateRequest request)
@@ -29,6 +33,6 @@ public class MessageService : IMessageService
         
         CustomerKafkaMessage message = new CustomerKafkaMessage() { NewUserMessage = newUser };
         
-        return _messageRepository.SendMessageAsync(request.Id, message, "customermanager");
+        return _messageRepository.SendMessageAsync(request.Id, message, _kafkaSettings.Topics["customermanager"]);
     }
 }

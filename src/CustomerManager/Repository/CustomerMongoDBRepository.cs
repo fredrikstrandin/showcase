@@ -149,23 +149,31 @@ namespace CustomerManager.Repository
                         where x.Email == item.Email
                         select x.Email;
 
-            var email = await query.FirstOrDefaultAsync(cancellationToken);
-
-            if (email == null)
+            try
             {
-                CustomerEntity entity = item;
-                await _context.Customers.InsertOneAsync(entity);
+                var email = await query.FirstOrDefaultAsync(cancellationToken);
+
+                if (email == null)
+                {
+                    CustomerEntity entity = item;
+                    await _context.Customers.InsertOneAsync(entity);
 
 
-                _logger.LogInformation($"Customer {item.Id} was created.");
+                    _logger.LogInformation($"Customer {item.Id} was created.");
 
-                return new CustomerRespons(entity.Id.ToString(), null);
+                    return new CustomerRespons(entity.Id.ToString(), null);
+                }
+                else
+                {
+                    _logger.LogWarning("Customer {Id} with {Email} allready exist.", item.Id, item.Email);
+
+                    return new CustomerRespons(null, new DuplicateException($"Customer {item.Id} with {item.Email} allready exist."));
+                }
             }
-            else
+            catch (Exception e)
             {
-                _logger.LogWarning("Customer {Id} with {Email} allready exist.", item.Id, item.Email);
 
-                return new CustomerRespons(null, new DuplicateException($"Customer {item.Id} with {item.Email} allready exist."));
+                throw;
             }
         }
     }

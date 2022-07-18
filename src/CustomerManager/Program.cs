@@ -1,3 +1,4 @@
+using CommonLib.Model;
 using CustomerManager.DataContexts;
 using CustomerManager.GrpcService;
 using CustomerManager.Interfaces;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<KafkaSettings>(builder.Configuration.GetSection("Kafka"));
+builder.Services.Configure<KafkaSetting>(builder.Configuration.GetSection("Kafka"));
 builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDBDatabaseSetting"));
 
 builder.Services.AddSingleton<IMongoDBContext, MongoDBContext>();

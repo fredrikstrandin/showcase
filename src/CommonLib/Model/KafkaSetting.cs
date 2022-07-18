@@ -8,10 +8,10 @@ namespace CommonLib.Model
 {
     public class KafkaSetting
     {
-        public string bootstrapServers { get; set; }
+        public string BootstrapServers { get; set; }
 
-        public string schemaRegistryUrl { get; set; }
-        public string topicName { get; set; }
+        public string SchemaRegistryUrl { get; set; }
+        public Dictionary<string, string> Topics{ get; set; }
         public string GroupId { get; set; }
     }
 }
