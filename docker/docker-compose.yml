@@ -3,11 +3,11 @@ networks:
   northstarnetwork:
 
 services:
-  customermanager:
-    image: ${DOCKER_REGISTRY-}customermanager
+  usermanager:
+    image: ${DOCKER_REGISTRY-}usermanager
     build:
       context: .
-      dockerfile: ../src/CustomerManager/Dockerfile
+      dockerfile: ../src/UserManager/Dockerfile
     environment:
         loki: http://loki:3100
         ASPNETCORE_ENVIRONMENT: Docker

@@ -1,0 +1,54 @@
+﻿syntax = "proto3";
+
+package northstar.message;
+
+service UserGrpcService {
+    rpc Create(UserCreateRequestMessage) returns (UserCreateResponsMessage);    
+    rpc Get(UserGetRequestMessage) returns (UserGetResponsMessage);    
+}
+
+message UserCreateRequestMessage {
+    string Id = 1;
+    string FirstName = 2;   
+    string LastName = 3;
+    string Email = 4;
+    string Street = 5;
+    string Zip = 6;
+    string City = 7;
+}
+
+message UserCreateSuccessMessage {
+    string Id = 1;
+}
+
+message UserGetRequestMessage {
+    string Id = 1;
+}
+message UserGetSuccessMessage {
+    string Id = 1;
+    string FirstName = 2;   
+    string LastName = 3;
+    string Email = 4;
+    string Street = 5;
+    string Zip = 6;
+    string City = 7;
+}
+message UserErrorMessage {
+    repeated string Message = 1;
+}
+    
+message UserCreateResponsMessage {
+    int32 httpstatus = 1;
+    oneof MessageType {                      
+        UserCreateSuccessMessage success = 2;
+        UserErrorMessage error = 3;       
+    }
+}
+ 
+message UserGetResponsMessage {
+    int32 httpstatus = 1;
+    oneof MessageType {                      
+        UserGetSuccessMessage success = 2;
+        UserErrorMessage error = 3;       
+    }
+}

@@ -22,7 +22,7 @@ public static class Config
     public static IEnumerable<ApiScope> ApiScopes =>
       new[]
       {
-    new ApiScope("bankapi.customer"),
+    new ApiScope("bankapi.user"),
     new ApiScope("bankapi.employeer"),
     new ApiScope("bankapi.loanadministrator"),
     new ApiScope("bankapi.advisor")
@@ -31,7 +31,7 @@ public static class Config
     {
   new ApiResource("bankapi")
   {
-    Scopes = new List<string> { "bankapi.customer", "bankapi.employeer", "bankapi.loanadministrator", "bankapi.advisor" },
+    Scopes = new List<string> { "bankapi.user", "bankapi.employeer", "bankapi.loanadministrator", "bankapi.advisor" },
     ApiSecrets = new List<Secret> {new Secret("ScopeSecret".Sha256())},
     UserClaims = new List<string> {"role"}
   }
@@ -65,7 +65,7 @@ public static class Config
       PostLogoutRedirectUris = {"https://localhost:5444/signout-callback-oidc"},
 
       AllowOfflineAccess = true,
-      AllowedScopes = {"openid", "profile", "bankapi.customer"},
+      AllowedScopes = {"openid", "profile", "bankapi.user"},
       RequirePkce = true,
       RequireConsent = true,
       AllowPlainTextPkce = false

@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="proto\CustomerManager\customer.kafka.proto" />
+	  <None Remove="proto\UserManager\user.kafka.proto" />
 	  <None Remove="proto\IdentityManager\identity.proto" />
 	</ItemGroup>
 
@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-		<Protobuf Include="proto\CustomerManager\customer.kafka.proto" />
-		<Protobuf Include="proto\CustomerManager\customer.proto" />
+		<Protobuf Include="proto\UserManager\user.kafka.proto" />
+		<Protobuf Include="proto\UserManager\user.proto" />
 		<Protobuf Include="proto\IdentityManager\identity.proto" />
 	</ItemGroup>
 

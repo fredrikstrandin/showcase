@@ -1,4 +1,4 @@
-using CommonLib.Model;
+using CommonLib.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using NorthStarGraphQL.Backgrondservices;
 using NorthStarGraphQL.Extention;
@@ -32,7 +32,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddInMemorySubscriptions();
 
-builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
+builder.Services.AddSingleton<IUserRepository, UserGRPCRepository>();
 
 builder.Services.AddSingleton<IIdentityService, IdentityService>();
 builder.Services.AddSingleton<IIdentityRepository, IdentityRepository>();

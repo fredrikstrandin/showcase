@@ -8,7 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Antaganden.txt = Antaganden.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerManager", "src\CustomerManager\CustomerManager.csproj", "{26FCCD34-5C4F-4FC5-97D2-D5A69DAA0122}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManager", "src\UserManager\UserManager.csproj", "{26FCCD34-5C4F-4FC5-97D2-D5A69DAA0122}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityManager", "src\IdentityManager\IdentityManager.csproj", "{EC1450B7-DC95-4674-9C9C-B7ABC5B43333}"
 EndProject

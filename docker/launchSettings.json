@@ -16,7 +16,7 @@
         "broker": "StartWithoutDebugging",
         "connect": "StartWithoutDebugging",
         "control-center": "StartWithoutDebugging",
-        "customermanager": "StartDebugging",
+        "usermanager": "StartDebugging",
         "identitymanager": "StartDebugging",
         "ksql-datagen": "StartWithoutDebugging",
         "ksqldb-cli": "StartWithoutDebugging",

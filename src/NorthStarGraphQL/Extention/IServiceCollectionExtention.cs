@@ -9,14 +9,14 @@ public static class IServiceCollectionExtention
 {
     public static IHttpClientBuilder AddClients(this IServiceCollection services, ConfigurationManager config)
     {
-        services.AddGrpcClient<CustomerGrpcService.CustomerGrpcServiceClient>(
+        services.AddGrpcClient<UserGrpcService.UserGrpcServiceClient>(
             o => {
-                o.Address = new Uri(config["CustomerManager:ServerUrl"]);
+                o.Address = new Uri(config["UserManager:ServerUrl"]);
             }
         )
         .ConfigureChannel(x => 
         {
-            if (config.GetValue<bool>("CustomerManager:AllowInsecureConnections"))
+            if (config.GetValue<bool>("UserManager:AllowInsecureConnections"))
             {
                 var httpHandler = new HttpClientHandler();
 

@@ -1,20 +1,22 @@
 ﻿using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Execution;
 using NorthStarGraphQL.GraphQL.Types.User;
 using NorthStarGraphQL.Interface;
 using NorthStarGraphQL.Models;
+using CommonLib.Extensions;
 using System.Security.Claims;
 
 namespace NorthStarGraphQL.GraphQL;
 
 public class NorthStarMutation
 {
-    readonly private ICustomerRepository _customerRepository;
+    readonly private IUserRepository _userRepository;
     readonly private IIdentityService _identityService;
     readonly private ILogger<NorthStarMutation> _logger;
 
-    public NorthStarMutation(ICustomerRepository customerRepository, IIdentityService identityService, ILogger<NorthStarMutation> logger)
+    public NorthStarMutation(IUserRepository userRepository, IIdentityService identityService, ILogger<NorthStarMutation> logger)
     {
-        _customerRepository = customerRepository;
+        _userRepository = userRepository;
         _identityService = identityService;
         _logger = logger;
     }
@@ -44,7 +46,7 @@ public class NorthStarMutation
 
         if (login.error == null)
         {
-            UserCreateItem customerItem = new UserCreateItem(
+            UserCreateItem userItem = new UserCreateItem(
                 login.id,
                 firstName,
                 lastName,
@@ -53,24 +55,24 @@ public class NorthStarMutation
                 zip,
                 city);
 
-            var ret = await _customerRepository.CreateAsync(customerItem, CancellationToken.None);
-
-            if (string.IsNullOrWhiteSpace(ret.error))
+            var ret = await _userRepository.CreateAsync(userItem);
+            
+            if (ret.error != null)
             {
                 if (ret.id != null)
                 {
                     return new UserType(ret.id,
-                        customerItem.FirstName,
-                        customerItem.LastName,
-                        customerItem.Email,
-                        customerItem.Street,
-                        customerItem.Zip,
-                        customerItem.City);
+                        userItem.FirstName,
+                        userItem.LastName,
+                        userItem.Email,
+                        userItem.Street,
+                        userItem.Zip,
+                        userItem.City);
                 }
             }
             else
-            {
-                throw new Exception(ret.error);
+            {   
+                throw new QueryException(ret.error.Create());
             }
         }
         else

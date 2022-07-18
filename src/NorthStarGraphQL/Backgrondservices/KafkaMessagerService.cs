@@ -9,7 +9,7 @@ using NorthStarGraphQL.Models;
 using HotChocolate.Subscriptions;
 using NorthStarGraphQL.GraphQL;
 using Microsoft.Extensions.Options;
-using CommonLib.Model;
+using CommonLib.Settings;
 
 namespace NorthStarGraphQL.Backgrondservices
 {
@@ -32,7 +32,7 @@ namespace NorthStarGraphQL.Backgrondservices
         {
             string bootstrapServers = _kafkaSettings.BootstrapServers;
             string schemaRegistryUrl = _kafkaSettings.SchemaRegistryUrl;
-            string topicName = _kafkaSettings.Topics["customermanager"];
+            string topicName = _kafkaSettings.Topics["usermanager"];
 
             var producerConfig = new ProducerConfig
             {
@@ -54,12 +54,11 @@ namespace NorthStarGraphQL.Backgrondservices
                 GroupId = _kafkaSettings.GroupId
             };
 
-            CancellationTokenSource cts = new CancellationTokenSource();
             var consumeTask = Task.Run(async () =>
             {
                 using (var consumer =
-                    new ConsumerBuilder<string, CustomerKafkaMessage>(consumerConfig)
-                        .SetValueDeserializer(new ProtobufDeserializer<CustomerKafkaMessage>().AsSyncOverAsync())
+                    new ConsumerBuilder<string, UserKafkaMessage>(consumerConfig)
+                        .SetValueDeserializer(new ProtobufDeserializer<UserKafkaMessage>().AsSyncOverAsync())
                         .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
                         .Build())
                 {
@@ -75,10 +74,10 @@ namespace NorthStarGraphQL.Backgrondservices
 
                                 switch (consumeResult.Message.Value.MessageTypeCase)
                                 {
-                                    case CustomerKafkaMessage.MessageTypeOneofCase.None:
+                                    case UserKafkaMessage.MessageTypeOneofCase.None:
                                         Console.WriteLine("None");
                                         break;
-                                    case CustomerKafkaMessage.MessageTypeOneofCase.NewUserMessage:
+                                    case UserKafkaMessage.MessageTypeOneofCase.NewUserMessage:
                                         var newUserMessage = consumeResult.Message.Value.NewUserMessage;
 
                                         _logger.LogInformation($"NewUserMessage was added with id {newUserMessage.Id}");
