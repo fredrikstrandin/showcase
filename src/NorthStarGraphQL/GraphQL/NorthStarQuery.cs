@@ -1,10 +1,10 @@
-﻿using CustomerManager.Model;
+﻿using NorthStarGraphQL.GraphQL.Types.User;
 
 namespace NorthStarGraphQL.GraphQL;
 
 public class NorthStarQuery 
 {
-        public UserItem GetUser() => 
-                new UserItem("1", "Lars", "Larsson", "fre@svt.se", "sveav 34", "112 11", "Stockholm", 34000);
+        public UserType GetUser() => 
+                new UserType("1", "Lars", "Larsson", "fre@svt.se", "sveav 34", "112 11", "Stockholm");
     
 }

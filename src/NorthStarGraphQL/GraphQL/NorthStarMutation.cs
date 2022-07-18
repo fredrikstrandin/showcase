@@ -1,10 +1,8 @@
-﻿using CustomerManager.Model;
-using HotChocolate.AspNetCore.Authorization;
-using Northstar.Message;
+﻿using HotChocolate.AspNetCore.Authorization;
+using NorthStarGraphQL.GraphQL.Types.User;
 using NorthStarGraphQL.Interface;
 using NorthStarGraphQL.Models;
 using System.Security.Claims;
-using static HotChocolate.ErrorCodes;
 
 namespace NorthStarGraphQL.GraphQL;
 
@@ -22,7 +20,7 @@ public class NorthStarMutation
     }
 
     [Authorize]
-    public async Task<UserItem> UpdateUserAsync(string test, ClaimsPrincipal claims)
+    public async Task<UserType> UpdateUserAsync(string test, ClaimsPrincipal claims)
     {
         _logger.LogDebug(test);
 
@@ -31,10 +29,10 @@ public class NorthStarMutation
             _logger.LogDebug($"{item.Type}: {item.Value}");
         }
 
-        return UserItem.Default();
+        return UserType.Default();
     }
 
-    public async Task<UserItem> CreateUserAsync(string firstName, string lastName, string email, string nickname, string password, string street, string zip, string city)
+    public async Task<UserType> CreateUserAsync(string firstName, string lastName, string email, string nickname, string password, string street, string zip, string city)
     {
         LoginCreateItem loginItem = new LoginCreateItem(
                 nickname,
@@ -53,8 +51,7 @@ public class NorthStarMutation
                 email,
                 street,
                 zip,
-                city,
-                0);
+                city);
 
             var ret = await _customerRepository.CreateAsync(customerItem, CancellationToken.None);
 
@@ -62,14 +59,13 @@ public class NorthStarMutation
             {
                 if (ret.id != null)
                 {
-                    return new UserItem(ret.id,
+                    return new UserType(ret.id,
                         customerItem.FirstName,
                         customerItem.LastName,
                         customerItem.Email,
                         customerItem.Street,
                         customerItem.Zip,
-                        customerItem.City,
-                        customerItem?.MonthlyIncome ?? 0);
+                        customerItem.City);
                 }
             }
             else

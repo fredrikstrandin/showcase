@@ -1,8 +1,8 @@
-﻿namespace NorthStarGraphQL.Models;
+﻿namespace NorthStarGraphQL.GraphQL.Types.User;
 
-public class UserCreateItem
+public class UserCreateType
 {
-    public UserCreateItem(string id, string firstName, string lastName, string email, string street, string zip, string city)
+    public UserCreateType(string id, string firstName, string lastName, string email, string street, string zip, string city)
     {
         Id = id;
         FirstName = firstName;

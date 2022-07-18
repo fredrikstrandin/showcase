@@ -1,8 +1,8 @@
-﻿namespace CustomerManager.Model
+﻿namespace NorthStarGraphQL.GraphQL.Types.User
 {
-    public class UserItem
+    public class UserType
     {
-        public UserItem(string id, string firstName, string lastName, string email, string street, string zip, string city, int monthlyIncome)
+        public UserType(string id, string firstName, string lastName, string email, string street, string zip, string city)
         {
             Id = id;
             FirstName = firstName;
@@ -11,7 +11,6 @@
             Street = street;
             Zip = zip;
             City = city;
-            MonthlyIncome = monthlyIncome;
         }
 
         public string Id { get; }
@@ -21,11 +20,10 @@
         public string Street { get; }
         public string Zip { get; }
         public string City { get; }
-        public int? MonthlyIncome { get; }
 
-        public static UserItem Default()
+        public static UserType Default()
         {
-            return new UserItem(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, default);
+            return new UserType(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         }
     }
 }
