@@ -91,8 +91,7 @@ namespace NorthStarGraphQL.Backgrondservices
                                             newUserMessage.Email,
                                             newUserMessage.Street,
                                             newUserMessage.Zip,
-                                            newUserMessage.City,
-                                            0
+                                            newUserMessage.City
                                         ));
 
                                         break;

@@ -22,11 +22,11 @@ namespace LoanManager.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CustomerItem>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<List<UserItem>>> Get(CancellationToken cancellationToken)
         {
             //Nyttan av att se alla utan paging går att diskutera.
 
-            List<CustomerItem> ret = await _customerService.GetAsync(cancellationToken);
+            List<UserItem> ret = await _customerService.GetAsync(cancellationToken);
 
             if (ret == null)
             {
@@ -39,9 +39,9 @@ namespace LoanManager.Controllers
         }
 
         [HttpGet("{userid}")]
-        public async Task<ActionResult<CustomerItem>> GetByUserId(string userId, CancellationToken cancellationToken)
+        public async Task<ActionResult<UserItem>> GetByUserId(string userId, CancellationToken cancellationToken)
         {
-            CustomerItem ret = await _customerService.GetByIdAsync(userId, cancellationToken);
+            UserItem ret = await _customerService.GetByIdAsync(userId, cancellationToken);
 
             if (ret == null)
             {
@@ -74,7 +74,7 @@ namespace LoanManager.Controllers
 
 
         [HttpPut]
-        public async Task<ActionResult<CustomerRespons>> Update([FromBody] CustomerUpdateRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<CustomerRespons>> Update([FromBody] UserUpdateRequest request, CancellationToken cancellationToken)
         {
             //Normalt behöver man inte skicka med id, det skall vara i oauth token. Men sätter inte upp en Identity server.
 

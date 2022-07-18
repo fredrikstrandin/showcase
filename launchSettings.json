@@ -21,7 +21,6 @@
         "ksql-datagen": "StartWithoutDebugging",
         "ksqldb-cli": "StartWithoutDebugging",
         "ksqldb-server": "StartWithoutDebugging",
-        "loanmanager": "StartDebugging",
         "mongodb": "StartWithoutDebugging",
         "rest-proxy": "StartWithoutDebugging",
         "schema-registry": "StartWithoutDebugging",

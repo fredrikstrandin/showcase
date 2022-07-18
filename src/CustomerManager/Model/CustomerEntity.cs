@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CustomerManager.Model
 {
-    public class CustomerEntity
+    public class UserEntity
     {
         //Jag använder inte personnummer som id på grund av GDPR. Man vill inte skicka runt det på siten.
         [BsonId]
@@ -16,9 +16,8 @@ namespace CustomerManager.Model
         public string Street { get; set; }
         public string Zip { get; set; }
         public string City { get; set; }
-        public int MonthlyIncome { get; set; }
-
-        public static implicit operator CustomerEntity(CustomerItem item)
+        
+        public static implicit operator UserEntity(UserItem item)
         {
             if (item == null)
             {
@@ -27,7 +26,7 @@ namespace CustomerManager.Model
 
             if(ObjectId.TryParse(item.Id, out ObjectId id))
             {
-                return new CustomerEntity()
+                return new UserEntity()
                 {
                     Id = id,
                     FirstName = item.FirstName,
@@ -35,8 +34,7 @@ namespace CustomerManager.Model
                     Email = item.Email,
                     Street = item.Street,
                     Zip = item.Zip,
-                    City = item.City,
-                    MonthlyIncome = item?.MonthlyIncome ?? 0
+                    City = item.City
                 };
             }
             else
@@ -45,14 +43,14 @@ namespace CustomerManager.Model
             }
         }
 
-        public static implicit operator CustomerItem(CustomerEntity entity)
+        public static implicit operator UserItem(UserEntity entity)
         {
             if (entity == null)
             {
                 return null;
             }
 
-            return new CustomerItem(entity.Id.ToString(), entity.FirstName, entity.LastName, entity.Email, entity.Street, entity.Zip, entity.City, entity?.MonthlyIncome ?? 0);
+            return new UserItem(entity.Id.ToString(), entity.FirstName, entity.LastName, entity.Email, entity.Street, entity.Zip, entity.City);
         }
     }
 }

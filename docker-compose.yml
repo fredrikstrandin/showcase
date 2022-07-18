@@ -49,29 +49,6 @@ services:
     networks:
         - northstarnetwork
 
-  loanmanager:
-    image: ${DOCKER_REGISTRY-}loanmanager
-    build:
-      context: .
-      dockerfile: src/LoanManager/Dockerfile
-    environment:
-        loki: http://loki:3100
-        ASPNETCORE_HTTPS_PORT: 5100
-        ASPNETCORE_ENVIRONMENT: Docker
-        ASPNETCORE_URLS: https://+:443;http://+:80
-        ASPNETCORE_Kestrel__Certificates__Default__Password: password
-        ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
-    volumes:
-      - ~/.aspnet/https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
-    ports:
-        - 5101:80
-        - 5100:443
-    depends_on:
-        loki:
-            condition: service_healthy
-    networks:
-        - northstarnetwork
-
   northstartgraphql:
     image: ${DOCKER_REGISTRY-}northstartgraphql
     build:

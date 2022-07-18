@@ -33,8 +33,7 @@ public class CustomerGrpcServer : CustomerGrpcService.CustomerGrpcServiceBase
                 request.Email,
                 request.Street,
                 request.Zip,
-                request.City,
-                request.MonthlyIncome);
+                request.City);
             
         CustomerRespons ret = await _customerService.CreateAsync(
             customerRequest,
@@ -46,11 +45,11 @@ public class CustomerGrpcServer : CustomerGrpcService.CustomerGrpcServiceBase
         {
             await _messageService.SendNewUserAsync(customerRequest);
 
-            return new CustomerResponsMessage() { Success = new CustomerCreateSuccessMessage() { Id = ret.Id } };
+            return new CustomerResponsMessage() { Success = new UserCreateSuccessMessage() { Id = ret.Id } };
         }
         else
         {
-            var error = new CustomerErrorMessage();
+            var error = new UserErrorMessage();
 
             error.Message.Add(ret.Error.Message);
             while(ret.Error.InnerException != null)
@@ -60,12 +59,5 @@ public class CustomerGrpcServer : CustomerGrpcService.CustomerGrpcServiceBase
 
             return new CustomerResponsMessage() { Error = error };
         }
-    }
-
-    public override async Task<MonthlyIncomeReply> GetMonthlyIncome(MonthlyIncomeRequest request, ServerCallContext context)
-    {
-        int monthlyIncome = await _customerService.GetMonthlyIncomeAsync(request.Id, context.CancellationToken);
-
-        return new MonthlyIncomeReply() { MonthlyIncome = monthlyIncome };
     }
 }

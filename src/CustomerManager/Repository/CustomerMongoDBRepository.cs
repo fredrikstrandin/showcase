@@ -24,20 +24,20 @@ namespace CustomerManager.Repository
             _logger = logger;
         }
 
-        public async Task<List<CustomerItem>> GetAsync(CancellationToken cancellationToken)
+        public async Task<List<UserItem>> GetAsync(CancellationToken cancellationToken)
         {
             var query =
-                from x in _context.Customers.AsQueryable<CustomerEntity>()
-                select new CustomerItem(x.Id.ToString(), x.FirstName, x.LastName, x.Email, x.Street, x.Zip, x.City, x.MonthlyIncome);
+                from x in _context.Customers.AsQueryable<UserEntity>()
+                select new UserItem(x.Id.ToString(), x.FirstName, x.LastName, x.Email, x.Street, x.Zip, x.City);
 
             return await query.ToListAsync(cancellationToken);
         }
 
-        public async Task<CustomerItem> GetByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<UserItem> GetByIdAsync(string userId, CancellationToken cancellationToken)
         {
             if (ObjectId.TryParse(userId, out ObjectId id))
             {
-                var query = from x in _context.Customers.AsQueryable<CustomerEntity>()
+                var query = from x in _context.Customers.AsQueryable<UserEntity>()
                             where x.Id == id
                             select x;
 
@@ -49,23 +49,7 @@ namespace CustomerManager.Repository
             }
         }
 
-        public async Task<int> GetMonthlyIncomeAsync(string id, CancellationToken cancellationToken)
-        {
-            if (ObjectId.TryParse(id, out ObjectId customerId))
-            {
-                var query = from x in _context.Customers.AsQueryable<CustomerEntity>()
-                            where x.Id == customerId
-                            select x.MonthlyIncome;
-
-
-                return await query.FirstOrDefaultAsync(cancellationToken);
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        public async Task<CustomerRespons> UpdateAsync(CustomerUpdateRequest request, CancellationToken cancellationToken)
+        public async Task<CustomerRespons> UpdateAsync(UserUpdateRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Updatera kund.");
 
@@ -76,11 +60,11 @@ namespace CustomerManager.Repository
                 return new CustomerRespons(request.Id, new FormatException("Id id not a ObjectId"));
             }
 
-            FilterDefinition<CustomerEntity> filter = Builders<CustomerEntity>.Filter
+            FilterDefinition<UserEntity> filter = Builders<UserEntity>.Filter
                 .Where(x => x.Id == customerId);
 
-            var update = Builders<CustomerEntity>.Update;
-            var updates = new List<UpdateDefinition<CustomerEntity>>();
+            var update = Builders<UserEntity>.Update;
+            var updates = new List<UpdateDefinition<UserEntity>>();
 
             //Man kan inte ändra personnummer.
             //Byta lösenord bör göras i en annan process så jag lämnar det här. 
@@ -120,12 +104,6 @@ namespace CustomerManager.Repository
                 updates.Add(update.Set(x => x.City, request.City));
             }
 
-            //Borde vara int? så null är att man inte updaterar
-            if (request.MonthlyIncome.HasValue)
-            {
-                updates.Add(update.Set(x => x.MonthlyIncome, request.MonthlyIncome.Value));
-            }
-
             var ret = await _context.Customers.UpdateOneAsync(filter, update.Combine(updates));
 
             if (ret.ModifiedCount > 0)
@@ -140,12 +118,12 @@ namespace CustomerManager.Repository
             }
         }
 
-        public async Task<CustomerRespons> CreateAsync(CustomerItem item, CancellationToken cancellationToken)
+        public async Task<CustomerRespons> CreateAsync(UserItem item, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Customer {item.Id} start created.");
 
             //För att kolla om användaren redan finns
-            var query = from x in _context.Customers.AsQueryable<CustomerEntity>()
+            var query = from x in _context.Customers.AsQueryable<UserEntity>()
                         where x.Email == item.Email
                         select x.Email;
 
@@ -155,7 +133,7 @@ namespace CustomerManager.Repository
 
                 if (email == null)
                 {
-                    CustomerEntity entity = item;
+                    UserEntity entity = item;
                     await _context.Customers.InsertOneAsync(entity);
 
 

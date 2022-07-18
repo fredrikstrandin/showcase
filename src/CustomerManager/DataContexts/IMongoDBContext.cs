@@ -6,6 +6,6 @@ namespace CustomerManager.DataContexts
     public interface IMongoDBContext
     {
         IMongoDatabase _database { get; set; }
-        IMongoCollection<CustomerEntity> Customers {  get; }
+        IMongoCollection<UserEntity> Customers {  get; }
     }
 }

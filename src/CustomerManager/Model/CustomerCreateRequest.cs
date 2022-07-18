@@ -2,7 +2,7 @@
 {
     public class CustomerCreateRequest
     {
-        public CustomerCreateRequest(string id, string firstName, string lastName, string email, string street, string zip, string city, int monthlyIncome)
+        public CustomerCreateRequest(string id, string firstName, string lastName, string email, string street, string zip, string city)
         {
             Id = id;
             FirstName = firstName;
@@ -11,7 +11,6 @@
             Street = street;
             Zip = zip;
             City = city;
-            MonthlyIncome = monthlyIncome;
         }
 
         public string Id { get; }
@@ -23,7 +22,5 @@
         public string Street { get; }
         public string Zip { get; }
         public string City { get; }
-        //Antar att hela kronor räcker.
-        public int MonthlyIncome { get; }
     }
 }

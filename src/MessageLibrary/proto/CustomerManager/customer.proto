@@ -3,8 +3,7 @@
 package northstar.message;
 
 service CustomerGrpcService {
-    rpc Create(CustomerRequestMessage) returns (CustomerResponsMessage);
-    rpc GetMonthlyIncome(MonthlyIncomeRequest) returns (MonthlyIncomeReply);
+    rpc Create(CustomerRequestMessage) returns (CustomerResponsMessage);    
 }
 
 message CustomerRequestMessage {
@@ -15,30 +14,21 @@ message CustomerRequestMessage {
     string Street = 5;
     string Zip = 6;
     string City = 7;
-    int32 MonthlyIncome = 8;
 }
 
-message CustomerCreateSuccessMessage {
+message UserCreateSuccessMessage {
     string Id = 1;
 }
 
-message CustomerErrorMessage {
+message UserErrorMessage {
     repeated string Message = 1;
 }
     
 message CustomerResponsMessage {
     reserved 1;
     oneof MessageType {                      
-        CustomerCreateSuccessMessage success = 2;
-        CustomerErrorMessage error = 3;       
+        UserCreateSuccessMessage success = 2;
+        UserErrorMessage error = 3;       
     }
 }
-                                                                                
-message MonthlyIncomeRequest {
-  string Id = 1;  
-}
-
-// The response message containing the greetings.
-message MonthlyIncomeReply {
-  int32 MonthlyIncome = 1;
-}
+ 

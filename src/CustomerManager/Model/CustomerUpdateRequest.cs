@@ -1,6 +1,6 @@
 ﻿namespace CustomerManager.Model
 {
-    public class CustomerUpdateRequest
+    public class UserUpdateRequest
     {
         public string Id { get; set; }
         public string FirstName { get; set; }
@@ -10,7 +10,6 @@
         public string Street { get; set; }
         public string Zip { get; set; }
         public string City { get; set; }
-        public int? MonthlyIncome { get; set; }
     }
 
 }

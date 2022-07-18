@@ -19,6 +19,6 @@ namespace CustomerManager.DataContexts
             _database = _client.GetDatabase(dbStetting.Value.Database);
         }
 
-        public IMongoCollection<CustomerEntity> Customers { get { return _database.GetCollection<CustomerEntity>("CustomerEntity"); } }
+        public IMongoCollection<UserEntity> Customers { get { return _database.GetCollection<UserEntity>("CustomerEntity"); } }
     }
 }

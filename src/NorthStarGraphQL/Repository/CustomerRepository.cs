@@ -28,8 +28,7 @@ public class CustomerRepository : ICustomerRepository
                 Email = item.Email,
                 Street = item.Street,
                 City = item.City,
-                Zip = item.Zip,
-                MonthlyIncome = item.MonthlyIncome ?? 0
+                Zip = item.Zip                
             };
 
             var reply = await _client.CreateAsync(req, cancellationToken: cancellationToken);

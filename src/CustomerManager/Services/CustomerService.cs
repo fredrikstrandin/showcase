@@ -24,39 +24,33 @@ namespace CustomerManager.Services
         {
             List<Claim> claims = new List<Claim>() { new Claim(JwtClaimTypes.Name, request.FirstName) };
 
-            CustomerItem item = new CustomerItem(
+            UserItem item = new UserItem(
                 request.Id,
                 request.FirstName,
                 request.LastName,
                 request.Email,
                 request.Street,
                 request.Zip,
-                request.City,
-                request.MonthlyIncome);
+                request.City);
 
             var ret = await _customerRepository.CreateAsync(item, cancellationToken);
 
             return ret;
         }
 
-        public async Task<CustomerRespons> UpdateAsync(CustomerUpdateRequest request, CancellationToken cancellationToken)
+        public async Task<CustomerRespons> UpdateAsync(UserUpdateRequest request, CancellationToken cancellationToken)
         {
             return await _customerRepository.UpdateAsync(request, cancellationToken);
         }
 
-        public Task<List<CustomerItem>> GetAsync(CancellationToken cancellationToken)
+        public Task<List<UserItem>> GetAsync(CancellationToken cancellationToken)
         {
             return _customerRepository.GetAsync(cancellationToken);
         }
 
-        public async Task<CustomerItem> GetByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<UserItem> GetByIdAsync(string userId, CancellationToken cancellationToken)
         {
             return await _customerRepository.GetByIdAsync(userId, cancellationToken);
-        }
-
-        public async Task<int> GetMonthlyIncomeAsync(string Id, CancellationToken cancellationToken)
-        {
-            return await _customerRepository.GetMonthlyIncomeAsync(Id, cancellationToken);
         }
     }
 }

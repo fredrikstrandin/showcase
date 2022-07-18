@@ -7,9 +7,8 @@ namespace CustomerManager.Interfaces;
 
 public interface ICustomerRepository
 {
-    Task<int> GetMonthlyIncomeAsync(string id, CancellationToken cancellationToken);
-    Task<List<CustomerItem>> GetAsync(CancellationToken cancellationToken);
-    Task<CustomerItem> GetByIdAsync(string userId, CancellationToken cancellationToken);
-    Task<CustomerRespons> UpdateAsync(CustomerUpdateRequest request, CancellationToken cancellationToken);
-    Task<CustomerRespons> CreateAsync(CustomerItem item, CancellationToken cancellationToken);
+    Task<List<UserItem>> GetAsync(CancellationToken cancellationToken);
+    Task<UserItem> GetByIdAsync(string userId, CancellationToken cancellationToken);
+    Task<CustomerRespons> UpdateAsync(UserUpdateRequest request, CancellationToken cancellationToken);
+    Task<CustomerRespons> CreateAsync(UserItem item, CancellationToken cancellationToken);
 }
