@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonLib", "src\CommonLib\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RelationManager", "src\RelationManager\RelationManager.csproj", "{E4704EF1-1ADD-46E7-8909-3B37A3FC1C63}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D4D4503E-CEF9-4015-A1C2-AB2B174D85C9}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker\docker-compose.dcproj", "{D4D4503E-CEF9-4015-A1C2-AB2B174D85C9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{FACD94BE-B4DD-40E8-95C6-F5F0066E5388}"
 EndProject

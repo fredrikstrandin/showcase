@@ -9,6 +9,8 @@
     <DockerServiceName>relationmanager</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="docker-compose.dcproj" />
+    <None Include="docker-compose.dcproj.user" />
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
   </ItemGroup>
