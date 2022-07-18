@@ -6,6 +6,7 @@ using NorthStarGraphQL.GraphQL;
 using NorthStarGraphQL.Interface;
 using NorthStarGraphQL.Repository;
 using NorthStarGraphQL.Services;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         opt.Authority = builder.Configuration["IdentityManager:ServerUrl"];
         opt.Audience = "bankapi";
+
+        opt.BackchannelHttpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = delegate { return true; } };
 
         opt.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
     });
@@ -46,19 +49,13 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NorthGraphQL v1"));
-}
-
-
 app.UseHttpsRedirection();
 
 app.UseRouting();
 
 app.UseAuthentication();
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); 
 app.UseAuthorization();
 
 app.UseWebSockets();

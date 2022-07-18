@@ -26,6 +26,12 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddIdentityServer(options =>
 {
+    //Then you run docker network you cant have localhost
+    if (!string.IsNullOrEmpty(builder.Configuration["IdentityServer:IssuerUri"]))
+    {
+        options.IssuerUri = builder.Configuration["IdentityServer:IssuerUri"];
+    }
+
     options.Events.RaiseErrorEvents = true;
     options.Events.RaiseInformationEvents = true;
     options.Events.RaiseFailureEvents = true;
