@@ -11,7 +11,7 @@ namespace IdentityManager.Controllers
         }
 
         [HttpGet]
-        public async  Task<ActionResult> Index()
+        public ActionResult Index()
         {
             return Ok("Kalle");
         }

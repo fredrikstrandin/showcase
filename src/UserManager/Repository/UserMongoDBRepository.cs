@@ -150,7 +150,7 @@ public class UserMongoDBRepository : IUserRepository
         }
         catch (Exception e)
         {
-
+            _logger.LogError(e.Message);
             throw;
         }
     }

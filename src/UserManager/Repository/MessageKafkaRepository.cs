@@ -63,7 +63,7 @@ public class MessageKafkaRepository : IMessageRepository
         }
         catch (Exception e)
         {
-
+            _logger.LogError(e.Message);
             throw;
         }
     }

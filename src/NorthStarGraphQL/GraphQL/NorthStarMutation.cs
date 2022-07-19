@@ -22,7 +22,7 @@ public class NorthStarMutation
     }
 
     [Authorize]
-    public async Task<UserType> UpdateUserAsync(string test, ClaimsPrincipal claims)
+    public Task<UserType> UpdateUserAsync(string test, ClaimsPrincipal claims)
     {
         _logger.LogDebug(test);
 
@@ -31,7 +31,7 @@ public class NorthStarMutation
             _logger.LogDebug($"{item.Type}: {item.Value}");
         }
 
-        return UserType.Default();
+        return Task.FromResult(UserType.Default());
     }
 
     public async Task<UserType> CreateUserAsync(string firstName, string lastName, string email, string password, string street, string zip, string city)
@@ -76,7 +76,7 @@ public class NorthStarMutation
         }
         else
         {
-            throw new Exception(login.error);
+            throw new QueryException(login.error);
         }
 
         return null;

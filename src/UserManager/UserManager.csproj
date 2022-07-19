@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>719cb41f-fa3c-44c2-85c0-c9c4b26ce2eb</UserSecretsId>
-    <Nullable>disable</Nullable>
+    <Nullable>annotations</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
