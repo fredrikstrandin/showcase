@@ -24,7 +24,7 @@ namespace IdentityManager.GrpcServices
                 claims.Add(new Claim(claim.Type, claim.Value));
             }
 
-            var resp = await _userStoreService.AddUserAsync(request.Email, request.Nickname, request.Password, claims);
+            var resp = await _userStoreService.AddUserAsync(request.Email, request.Password, claims);
             if (resp.Error == null)
             {
                 LoginCreateSuccessMessage success = new LoginCreateSuccessMessage() { Id = resp.Id };

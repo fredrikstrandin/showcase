@@ -32,6 +32,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddInMemorySubscriptions();
 
+builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IUserRepository, UserGRPCRepository>();
 
 builder.Services.AddSingleton<IIdentityService, IdentityService>();

@@ -9,7 +9,6 @@ service IdentityGrpcService {
 message LoginMessage {
     string Id = 1;
     string Email = 2;
-    string Nickname = 3;
     string Password = 4;
     
     repeated ClaimMessage Claims = 6;

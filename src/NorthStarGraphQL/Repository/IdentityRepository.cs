@@ -22,7 +22,6 @@ public class IdentityRepository : IIdentityRepository
     {
         LoginMessage message = new LoginMessage()
         {
-            Nickname = item.Nickname,
             Email = item.Email,
             Password = item.Password
         };

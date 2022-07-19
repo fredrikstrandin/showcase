@@ -34,10 +34,9 @@ public class NorthStarMutation
         return UserType.Default();
     }
 
-    public async Task<UserType> CreateUserAsync(string firstName, string lastName, string email, string nickname, string password, string street, string zip, string city)
+    public async Task<UserType> CreateUserAsync(string firstName, string lastName, string email, string password, string street, string zip, string city)
     {
         LoginCreateItem loginItem = new LoginCreateItem(
-                nickname,
                 email,
                 password,
                 new List<ClaimItem>() { new ClaimItem("userType", "member") });
