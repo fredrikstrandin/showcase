@@ -7,9 +7,11 @@ namespace UserManager.Interfaces
 {
     public interface IUserService
     {
-        Task<UserRespons> CreateAsync(UserCreateRequest reques);
+        Task<UserRespons> CreateAsync(UserCreateRequest request);
+        Task CreateManyAsync(List<UserCreateRequest> requests);
         Task<UserRespons> UpdateAsync(UserUpdateRequest reques);
         Task<UserItem> GetByIdAsync(string userId);
         Task<List<UserItem>> GetAsync();
+        
     }
 }

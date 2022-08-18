@@ -1,0 +1,22 @@
+﻿syntax = "proto3";
+
+package northstar.message;
+
+service SampleGrpcService {
+    rpc Create(SampleCreateUsersRequestMessage) returns (SampleCreateUsersResponsMessage);    
+}
+
+message SampleCreateUsersRequestMessage {
+    int32 Count = 1;
+}
+
+message SampleErrorMessage {
+    repeated string Message = 1;
+}
+
+message SampleCreateUsersResponsMessage {
+    int32 httpstatus = 1;
+    oneof MessageType {                      
+        SampleErrorMessage error = 3;       
+    }
+}

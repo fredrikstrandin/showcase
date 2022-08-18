@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using UserManager.Backgrondservices;
 using UserManager.DataContexts;
 using UserManager.GrpcService;
 using UserManager.Interfaces;
@@ -18,13 +19,18 @@ builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("Mo
 builder.Services.AddSingleton<IMongoDBContext, MongoDBContext>();
 
 // Add services to the container.
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserMongoDBRepository>();
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IUserRepository, UserMongoDBRepository>();
+builder.Services.AddSingleton<IKeyService, KeyService>();
+builder.Services.AddSingleton<IKeyRepository, KeyMongoDBRepository>();
+
 
 builder.Services.AddSingleton<IPasswordService, PasswordService>();
 builder.Services.AddSingleton<IMessageService, MessageService>();
 
 builder.Services.AddSingleton<IMessageRepository, MessageKafkaRepository>();
+
+builder.Services.AddHostedService<KeyBackgroundService>();
 
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();

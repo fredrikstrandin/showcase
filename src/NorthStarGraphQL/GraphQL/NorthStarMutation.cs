@@ -5,12 +5,14 @@ using NorthStarGraphQL.Interface;
 using NorthStarGraphQL.Models;
 using CommonLib.Extensions;
 using System.Security.Claims;
+using CommonLib.Models;
 
 namespace NorthStarGraphQL.GraphQL;
 
 public class NorthStarMutation
 {
     readonly private IUserRepository _userRepository;
+    readonly private ISampleRepository _userRepository;
     readonly private IIdentityService _identityService;
     readonly private ILogger<NorthStarMutation> _logger;
 
@@ -55,22 +57,19 @@ public class NorthStarMutation
                 city);
 
             var ret = await _userRepository.CreateAsync(userItem);
-            
-            if (ret.error != null)
+
+            if (ret.error == null)
             {
-                if (ret.id != null)
-                {
-                    return new UserType(ret.id,
-                        userItem.FirstName,
-                        userItem.LastName,
-                        userItem.Email,
-                        userItem.Street,
-                        userItem.Zip,
-                        userItem.City);
-                }
+                return new UserType(ret.id,
+                    userItem.FirstName,
+                    userItem.LastName,
+                    userItem.Email,
+                    userItem.Street,
+                    userItem.Zip,
+                    userItem.City);
             }
             else
-            {   
+            {
                 throw new QueryException(ret.error.Create());
             }
         }
@@ -79,7 +78,27 @@ public class NorthStarMutation
             throw new QueryException(login.error);
         }
 
-        return null;
+        throw new QueryException(ErrorItem.InternalError().Create());
     }
 
+    public async Task<bool> CreateTestUsersAsync(int count)
+    {
+        var ret = await _sampleRepository.CreateAsync(count);
+
+            if (ret.error == null)
+            {
+                return ret.Success;
+            }
+            else
+            {
+                throw new QueryException(ret.error.Create());
+            }
+        }
+        else
+        {
+            throw new QueryException(login.error);
+        }
+
+        throw new QueryException(ErrorItem.InternalError().Create());
+    }
 }

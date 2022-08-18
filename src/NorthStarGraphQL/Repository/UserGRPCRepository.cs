@@ -99,7 +99,7 @@ public class UserGRPCRepository : IUserRepository
         {
             _logger.LogCritical(e, "Rpc faild: from GrapQL to usermagnager");
 
-            throw;
+            return  new(null, ErrorItem.InternalError());
         }
     }
 }

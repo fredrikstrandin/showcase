@@ -11,4 +11,5 @@ public interface IUserRepository
     Task<UserItem> GetByIdAsync(string userId);
     Task<UserRespons> UpdateAsync(UserUpdateRequest request);
     Task<UserRespons> CreateAsync(UserItem item);
+    Task CreateManyAsync(List<UserItem> users);
 }

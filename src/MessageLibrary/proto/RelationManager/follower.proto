@@ -1,0 +1,27 @@
+﻿syntax = "proto3";
+
+package northstar.message;
+
+service FollowingGrpcService {
+    rpc Create(FollowingCreateRequestMessage) returns (FollowingCreateResponsMessage);    
+}
+
+message FollowingCreateRequestMessage {
+    string UserId = 1;
+    string FollowingId = 2;
+}
+
+message FollowingCreateSuccessMessage {
+    string UserId = 1;
+}
+message FollowingErrorMessage {
+    repeated string Message = 1;
+}
+
+message FollowingCreateResponsMessage {
+    int32 httpstatus = 1;
+    oneof MessageType {                      
+        FollowingCreateSuccessMessage success = 2;
+        FollowingErrorMessage error = 3;       
+    }
+}

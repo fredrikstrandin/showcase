@@ -39,7 +39,7 @@ public class UserMongoDBRepository : IUserRepository
         {
             var query = from x in _context.Users.AsQueryable()
                         where x.Id == id
-                        select x;
+                        select new UserItem(x.Id.ToString(), x.FirstName, x.LastName, x.Email, x.Street, x.Zip, x.City);
 
             return await query.FirstOrDefaultAsync();
         }
@@ -122,31 +122,40 @@ public class UserMongoDBRepository : IUserRepository
     {
         _logger.LogInformation($"User {item.Id} start created.");
 
-        //För att kolla om användaren redan finns
-        var query = from x in _context.Users.AsQueryable()
-                    where x.Email == item.Email
-                    select x.Email;
-
         try
         {
-            var email = await query.FirstOrDefaultAsync();
 
-            if (email == null)
+            UserEntity entity = item;
+            await _context.Users.InsertOneAsync(entity);
+
+
+            _logger.LogInformation($"User {item.Id} was created.");
+
+            return new UserRespons(entity.Id.ToString(), null);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            throw;
+        }
+    }
+    
+    public async Task CreateManyAsync(List<UserItem> users)
+    {
+        _logger.LogInformation($"CreateManyAsync start created.");
+
+        List<UserEntity> entities = new List<UserEntity>();
+        try
+        {
+            foreach (var user in users)
             {
-                UserEntity entity = item;
-                await _context.Users.InsertOneAsync(entity);
-
-
-                _logger.LogInformation($"User {item.Id} was created.");
-
-                return new UserRespons(entity.Id.ToString(), null);
+                entities.Add(user);
             }
-            else
-            {
-                _logger.LogWarning("User {Id} with {Email} allready exist.", item.Id, item.Email);
 
-                return new UserRespons(null, new DuplicateException($"User {item.Id} with {item.Email} allready exist."));
-            }
+            await _context.Users.InsertManyAsync(entities);
+
+
+            _logger.LogInformation($"CreateManyAsync was created.");
         }
         catch (Exception e)
         {

@@ -5,6 +5,7 @@ using Confluent.SchemaRegistry.Serdes;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Northstar.Message;
 using System;
 using System.Threading.Tasks;
 using UserManager.Interfaces;
@@ -19,6 +20,7 @@ public class MessageKafkaRepository : IMessageRepository
     private readonly ProducerConfig _producerConfig;
     private readonly SchemaRegistryConfig _schemaRegistryConfig;
     private readonly CachedSchemaRegistryClient _schemaRegistry;
+    private readonly IProducer<string, UserKafkaMessage> _producer;
 
     public MessageKafkaRepository(IOptions<KafkaSetting> kafkaSettings, ILogger<MessageKafkaRepository> logger)
     {
@@ -40,25 +42,25 @@ public class MessageKafkaRepository : IMessageRepository
         };
 
         _schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig);
-    }
+        _producer =
+                new ProducerBuilder<string, UserKafkaMessage>(_producerConfig)
+                    .SetValueSerializer(new ProtobufSerializer<UserKafkaMessage>(_schemaRegistry))
+                    .Build();
 
-    public async Task SendMessageAsync<K, V>(K key, V message, string topicName) where V : IMessage<V>, new()
+
+        }
+
+    public async Task SendMessageAsync(string key, UserKafkaMessage message, string topicName) 
     {
         try
         {
-            using (var producer =
-                new ProducerBuilder<K, V>(_producerConfig)
-                    .SetValueSerializer(new ProtobufSerializer<V>(_schemaRegistry))
-                    .Build())
-            {
-                var output = await producer
-                    .ProduceAsync(topicName, new Message<K, V> { Key = key, Value = message })
-                    .ContinueWith(task => task.IsFaulted
-                        ? $"error producing message: {task.Exception.Message}"
-                        : $"produced to: {task.Result.TopicPartitionOffset}");
+            var output = await _producer
+                .ProduceAsync(topicName, new Message<string, UserKafkaMessage> { Key = key, Value = message })
+                .ContinueWith(task => task.IsFaulted
+                    ? $"error producing message: {task.Exception.Message}"
+                    : $"produced to: {task.Result.TopicPartitionOffset}");
 
-                _logger.LogInformation(output);
-            }
+            _logger.LogInformation(output);
 
         }
         catch (Exception e)

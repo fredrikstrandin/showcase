@@ -4,6 +4,7 @@ package northstar.message;
 
 service UserGrpcService {
     rpc Create(UserCreateRequestMessage) returns (UserCreateResponsMessage);    
+    rpc CreateStream(stream UserCreateRequestMessage) returns (UserStreamResponsMessage);    
     rpc Get(UserGetRequestMessage) returns (UserGetResponsMessage);    
 }
 
@@ -37,6 +38,10 @@ message UserErrorMessage {
     repeated string Message = 1;
 }
     
+message UserStreamResponsMessage {
+    int32 count = 1;
+}
+
 message UserCreateResponsMessage {
     int32 httpstatus = 1;
     oneof MessageType {                      

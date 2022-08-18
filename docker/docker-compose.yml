@@ -94,6 +94,29 @@ services:
             condition: service_healthy
     networks:
         - northstarnetwork
+
+  generatorweb:
+    image: ${DOCKER_REGISTRY-}relationmanager
+    build:
+      context: .
+      dockerfile: ../src/GeneratorWeb/Dockerfile
+    environment:
+        loki: http://loki:3100
+        ASPNETCORE_ENVIRONMENT: Docker
+        ASPNETCORE_URLS: https://+:443;http://+:80
+        ASPNETCORE_HTTPS_PORT: 5108
+        ASPNETCORE_Kestrel__Certificates__Default__Password: password
+        ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
+    ports:
+        - 5111:80
+        - 5110:443
+    depends_on:
+        loki:
+            condition: service_healthy
+    networks:
+        - northstarnetwork
         
   prometheus:
     image: prom/prometheus:latest
@@ -336,19 +359,25 @@ services:
     networks:
         - northstarnetwork
 
-  arangodb_db_container:
-    image: arangodb:latest
-    environment:
-      ARANGO_ROOT_PASSWORD: rootpassword
+  neo4j:
+    image: neo4j:4.4.9
+    restart: unless-stopped
     ports:
-      - 8529:8529
+      - 7474:7474
+      - 7687:7687
     volumes:
-      - arangodb_data_container:/var/lib/arangodb3
-      - arangodb_apps_data_container:/var/lib/arangodb3-apps
+      - ./conf:/conf
+      - ./data:/data
+      - ./import:/import
+      - ./logs:/logs
+      - ./plugins:/plugins
+    environment: 
+      # Raise memory limits
+      - NEO4J_dbms_memory_pagecache_size=1G
+      - NEO4J_dbms.memory.heap.initial_size=1G
+      - NEO4J_dbms_memory_heap_max__size=1G
     networks:
         - northstarnetwork
 volumes:
   prometheus-data:
   grafana-data:
-  arangodb_data_container:
-  arangodb_apps_data_container:

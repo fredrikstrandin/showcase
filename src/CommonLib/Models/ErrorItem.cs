@@ -10,5 +10,9 @@
         public string Message { get; }
         public int HttpStatusCode { get; }
 
+        public static ErrorItem InternalError()
+        {
+            return new ErrorItem("Internal error", 500);
+        }
     }
 }

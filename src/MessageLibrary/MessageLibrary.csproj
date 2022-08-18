@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -7,6 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="proto\RelationManager\follower.proto" />
+	  <None Remove="proto\SampleManager\sampel.proto" />
 	  <None Remove="proto\UserManager\user.kafka.proto" />
 	  <None Remove="proto\IdentityManager\identity.proto" />
 	</ItemGroup>
@@ -20,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+		<Protobuf Include="proto\RelationManager\follower.proto" />
+		<Protobuf Include="proto\SampleManager\sampel.proto" />
 		<Protobuf Include="proto\UserManager\user.kafka.proto" />
 		<Protobuf Include="proto\UserManager\user.proto" />
 		<Protobuf Include="proto\IdentityManager\identity.proto" />
