@@ -7,6 +7,7 @@ namespace SampleManager.Services
     public class SampleService : ISampleService
     {
         private readonly ISampleRepository _sampleRepository;
+        private readonly ILoadDataService _loadDataService;
 
         public SampleService(ISampleRepository sampleRepository)
         {
@@ -18,7 +19,7 @@ namespace SampleManager.Services
             List<StreetItem> streets;
             List<NameItem> firstnames = new List<NameItem>();
             List<string> lastnames = new List<string>();
-            List<string> emails = new List<string>();
+            List<string> domans = new List<string>();
             List<string> ids = new List<string>();
             List<UserCreateRequestMessage> users = new List<UserCreateRequestMessage>();
 
@@ -62,16 +63,16 @@ namespace SampleManager.Services
                 maxLastname = lastnames.Count;
             }
 
-            using (StreamReader r = new StreamReader("Data/emails.txt"))
+            using (StreamReader r = new StreamReader("Data/domans.txt"))
             {
                 while (!r.EndOfStream)
                 {
                     string line = r.ReadLine();
 
-                    emails.Add(line);
+                    domans.Add(line);
                 }
 
-                maxEmail = emails.Count;
+                maxEmail = domans.Count;
             }
 
             for (int i = 0; i < 1000; i++)
@@ -85,7 +86,7 @@ namespace SampleManager.Services
                 string lastname = lastnames[randomInt];
 
                 randomInt = RandomNumberGenerator.GetInt32(0, maxEmail);
-                var email = $"{firstname}.{lastname}@{emails[randomInt]}".ToLower();
+                var email = $"{firstname}.{lastname}@{domans[randomInt]}".ToLower();
 
                 randomInt = RandomNumberGenerator.GetInt32(0, maxStreet);
                 var streetItem = streets[randomInt];

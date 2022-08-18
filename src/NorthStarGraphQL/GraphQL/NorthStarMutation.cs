@@ -12,15 +12,16 @@ namespace NorthStarGraphQL.GraphQL;
 public class NorthStarMutation
 {
     readonly private IUserRepository _userRepository;
-    readonly private ISampleRepository _userRepository;
+    readonly private ISampleRepository _sampleRepository;
     readonly private IIdentityService _identityService;
     readonly private ILogger<NorthStarMutation> _logger;
 
-    public NorthStarMutation(IUserRepository userRepository, IIdentityService identityService, ILogger<NorthStarMutation> logger)
+    public NorthStarMutation(IUserRepository userRepository, IIdentityService identityService, ILogger<NorthStarMutation> logger, ISampleRepository sampleRepository)
     {
         _userRepository = userRepository;
         _identityService = identityService;
         _logger = logger;
+        _sampleRepository = sampleRepository;
     }
 
     [Authorize]
@@ -85,20 +86,13 @@ public class NorthStarMutation
     {
         var ret = await _sampleRepository.CreateAsync(count);
 
-            if (ret.error == null)
-            {
-                return ret.Success;
-            }
-            else
-            {
-                throw new QueryException(ret.error.Create());
-            }
+        if (ret.error == null)
+        {
+            return ret.Success;
         }
         else
         {
-            throw new QueryException(login.error);
+            throw new QueryException(ret.error.Create());
         }
-
-        throw new QueryException(ErrorItem.InternalError().Create());
     }
 }
