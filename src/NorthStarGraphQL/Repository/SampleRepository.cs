@@ -8,7 +8,7 @@ using System.Net;
 
 namespace NorthStarGraphQL.Repository;
 
-public class SampleGRPCRepository : IUserRepository
+public class SampleGRPCRepository : ISampleRepository
 {
     private readonly ILogger<SampleGRPCRepository> _logger;
     private readonly UserGrpcService.UserGrpcServiceClient _client;
@@ -19,21 +19,10 @@ public class SampleGRPCRepository : IUserRepository
         _logger = logger;
     }
 
-    public async Task<(string id, ErrorItem error)> CreateUserSamplesAsync(int count)
+    public async Task<ErrorItem> CreateSampleUserAsync(int count)
     {
         try
         {
-            UserCreateRequestMessage req = new UserCreateRequestMessage()
-            {
-                Id = item.Id,
-                FirstName = item.FirstName,
-                LastName = item.LastName,
-                Email = item.Email,
-                Street = item.Street,
-                City = item.City,
-                Zip = item.Zip
-            };
-
             var reply = await _client.CreateAsync(req);
 
             if (reply.Httpstatus == (int)HttpStatusCode.Created && reply.Success != null)

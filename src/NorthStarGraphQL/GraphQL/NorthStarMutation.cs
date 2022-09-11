@@ -84,7 +84,7 @@ public class NorthStarMutation
 
     public async Task<bool> CreateTestUsersAsync(int count)
     {
-        var ret = await _sampleRepository.CreateAsync(count);
+        var ret = await _sampleRepository.CreateSampleUserAsync(count);
 
         if (ret.error == null)
         {
